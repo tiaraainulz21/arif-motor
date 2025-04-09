@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 850px;
+    height: 450px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.left-section {
+    width: 55%;
+    background-color: #014d10;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.left-section h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.left-section p {
+    font-size: 14px;
+    margin-top: 5px;
+    border-top: 1px solid white;
+    padding-top: 5px;
+}
+
+.right-section {
+    width: 60%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #014d10;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input, select, button {
+    width: 100%;
+    max-width: 320px;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button {
+    background: #014d10;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #013b0e;
+}
+
+a {
+    text-align: center;
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #014d10;
+    color: #014d10;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    width: 100%;
+    max-width: 320px;
+}
+
+a:hover {
+    background: #014d10;
+    color: white;
+}
+
+/* Tambahan agar semua input pas dan tidak mepet bawah */
+.right-section {
+    overflow-y: auto;        /* Kalau isi terlalu banyak, bisa discroll */
+    padding-top: 20px;       /* Biar gak terlalu atas */
+    padding-bottom: 30px;    /* Supaya tombol "Daftar" tidak mepet bawah */
+}
+
+/* Tambahan untuk memberi jarak antar input */
+input, select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Tambahan agar tombol daftar terlihat rata di bawah form */
+button[type="submit"] {
+    margin-top: 20px;
+}
+
+/* Responsive tweak (optional) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+        width: 90%;
+    }
+
+    .left-section, .right-section {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .left-section {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 8px;
+    }
+}
+
+/* Tambahkan tinggi container agar semua konten muat tanpa scroll */
+.container {
+    height: 520px; /* dari 450px jadi lebih tinggi */
+}
+
+/* Pastikan DAFTAR tetap terlihat */
+.right-section {
+    padding-top: 30px; /* kasih jarak dari atas */
+    padding-bottom: 30px;
+    overflow-y: hidden; /* hilangkan scroll vertikal */
+}
+
+/* Tambahan spacing antar elemen */
+input, select, button {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
