@@ -31,6 +31,11 @@
                         <i class="fa-solid fa-box me-2"></i> Kelola Produk
                     </a>                                     
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.service_status.index') }}" class="btn btn-success text-start w-100">
+                        <i class="fa-solid fa-tools me-2"></i> Kelola Status Service
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -77,7 +82,15 @@
                                 </div>
                             </div>
 
-                            <!-- Tambahan box lainnya jika dibutuhkan -->
+                            <div class="col-md-4">
+                                <div class="card text-white bg-success mb-3 shadow">
+                                    <div class="card-body">
+                                        <i class="fa-solid fa-wrench fa-2x"></i>
+                                        <p class="mt-2 mb-1">Total Service</p>
+                                        <h3 class="fw-bold">2</h3>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

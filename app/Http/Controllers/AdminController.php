@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Pesanan;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,11 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        $totalCustomers = Customer::count(); // Hitung total customer
+        $totalCustomers = Customer::count(); 
         $totalProducts = Product::count();
+        $totalServices = \App\Models\Service::count(); 
 
-        return view('adminpage.content.dashboard.index', compact('totalCustomers',  'totalProducts'));
+
+        return view('adminpage.content.dashboard.index', compact('totalCustomers',  'totalProducts', 'totalServices'));
     }
 }

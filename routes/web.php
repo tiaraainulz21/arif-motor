@@ -72,4 +72,15 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    
+
+
+
+        // Admin - Kelola Status Service
+    Route::get('/service-status', [App\Http\Controllers\Admin\ServiceStatusController::class, 'index'])->name('service_status.index');
+    Route::get('/service-status/{id}/edit', [App\Http\Controllers\Admin\ServiceStatusController::class, 'edit'])->name('service_status.edit');
+    Route::put('/service-status/{id}', [App\Http\Controllers\Admin\ServiceStatusController::class, 'update'])->name('service_status.update');
+
+
+    
 });
