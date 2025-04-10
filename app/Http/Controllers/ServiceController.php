@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Service;
+use App\Models\QueueService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -29,20 +30,21 @@ class ServiceController extends Controller
         $tanggalHariIni = Carbon::today()->toDateString();
 
         // Hitung jumlah antrean hari ini
-        $jumlahAntreanHariIni = Service::where('tanggal_registrasi', $tanggalHariIni)->count();
+        $jumlahAntreanHariIni = QueueService::where('date', $tanggalHariIni)->count();
 
         // No. antrean = jumlah antrean hari ini + 1
         $noAntrean = $jumlahAntreanHariIni + 1;
 
-        $service = Service::create([
-            'no_antrean' => $noAntrean, // Antrean berurutan
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'varian_motor' => $request->varian_motor,
-            'jenis_service' => $request->jenis_service,
-            'tanggal_registrasi' => $request->tanggal_registrasi,
-            'jam_kedatangan' => $request->jam_kedatangan,
+        $service = QueueService::create([
+            'user_id'=> Auth::user()->id,
+            'queue_number' => $noAntrean, // Antrean berurutan
+            'name' => $request->nama,
+            'address' => $request->alamat,
+            'phone' => $request->no_hp,
+            'vehicle' => $request->varian_motor,
+            'type' => $request->jenis_service,
+            'date' => $request->tanggal_registrasi,
+            'time' => $request->jam_kedatangan,
         ]);
 
         return redirect()->route('service.resume', $service->id);
@@ -50,18 +52,10 @@ class ServiceController extends Controller
 
     public function showResume($id)
     {
-        $service = Service::findOrFail($id);
+        $service = QueueService::findOrFail($id);
         return view('resume_layanan_service_customer', compact('service'));
     }
 
-    public function index()
-    {
-        // Urutkan antrean berdasarkan tanggal dan nomor antrean
-        $services = Service::orderBy('tanggal_registrasi', 'desc')
-                           ->orderBy('no_antrean', 'asc')
-                           ->get();
-
-        return view('service.index', compact('services'));
-    }
+   
 }
   
