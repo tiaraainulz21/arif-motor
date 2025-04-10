@@ -1,26 +1,5 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubah Profil</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-    <nav class="navbar navbar-dark bg-success p-3">
-        <a class="navbar-brand mx-3 text-white" href="#">ARIF MOTOR</a>
-        <div>
-            <button class="btn btn-light" onclick="window.location.href='{{ route('cart.index') }}'">
-                <i class="fa fa-shopping-cart"></i> 
-            </button>
-            <button class="btn btn-light" onclick="window.location.href='{{ route('profile.show') }}'">
-                <i class="fa fa-user"></i>
-            </button>
-        </div>
-    </nav>
-
+@extends('layouts.app')
+@section('content')
     <div class="container mt-4">
         <h3 class="text-center">UBAH PROFIL</h3>
         
@@ -53,5 +32,4 @@
         </div>
     </div>
 
-</body>
-</html>
+@endsection()

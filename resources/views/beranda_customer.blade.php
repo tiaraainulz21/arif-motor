@@ -1,12 +1,12 @@
-@extends('layouts.nav')
+@extends('layouts.app')
 
 @section('content')
 <style>
-    .container {
+/* .container {
     width: 90%;
     margin: 20px auto;
     text-align: center;
-}
+} */
 
 .content h2 {
     color: darkgreen;

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container mt-4">
     <h2><i class="fas fa-shopping-cart"></i> KERANJANG</h2>
     <table class="table">
         <thead>

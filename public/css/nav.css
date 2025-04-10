@@ -61,7 +61,7 @@ body {
 
 /* Bubble Menu */
 .bubble-menu {
-    position: absolute;
+    position: relative; /* absolute */
     top: 45px;
     right: 0;
     background: #d6d6d6;
