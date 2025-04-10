@@ -56,6 +56,4 @@ class ServiceController extends Controller
         return view('resume_layanan_service_customer', compact('service'));
     }
 
-   
 }
-  
