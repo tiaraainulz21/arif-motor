@@ -67,14 +67,14 @@ button {
 <div class="container">
     <h2>RESUME LAYANAN SERVICE</h2>
 
-    <p>No. Antrean: {{ $service->no_antrean }}</p>
-    <p>Nama: {{ $service->nama }}</p>
-    <p>Alamat: {{ $service->alamat }}</p>
-    <p>No. HP: {{ $service->no_hp }}</p>
-    <p>Varian Motor: {{ $service->varian_motor }}</p>
-    <p>Jenis Service: {{ $service->jenis_service }}</p>
-    <p>Tanggal Registrasi: {{ date('d-m-Y', strtotime($service->tanggal_registrasi)) }}</p>
-    <p>Jam Kedatangan: {{ $service->jam_kedatangan }}</p>
+    <p>No. Antrean: {{ $service->queue_number }}</p>
+    <p>Nama: {{ $service->name }}</p>
+    <p>Alamat: {{ $service->address }}</p>
+    <p>No. HP: {{ $service->phone }}</p>
+    <p>Varian Motor: {{ $service->vehicle }}</p>
+    <p>Jenis Service: {{ $service->type }}</p>
+    <p>Tanggal Registrasi: {{ date('d-m-Y', strtotime($service->date)) }}</p>
+    <p>Jam Kedatangan: {{ $service->time }}</p>
 
     <button class="print-btn" onclick="printPDF()">Cetak</button>
 </div>
