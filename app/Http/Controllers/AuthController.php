@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -42,19 +43,23 @@ class AuthController extends Controller
             'alamat' => 'required',
             'no_hp' => 'required',
             'jenis_kelamin' => 'required',
-            'email' => 'required|email|unique:customer,email',
-            'username' => 'required|unique:customer,username',
+            'email' => 'required|email|unique:users,email',
+            'username' => 'required|unique:users,username',
             'password' => 'required|min:6'
         ]);
         
+        $user = User::create([
+            'email' => $request->email,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+        ]);        
+
         $customer = Customer::create([
+            'user_id' => $user->id,
             'name' => $request->name,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
         ]);        
 
 

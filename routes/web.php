@@ -12,6 +12,10 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\StrukPesananController;
 
+Route::get('/admin', function(){
+    return view('adminpage.content.dashboard.index');
+})->name('dashboard');
+
 Route::get('/', function(){
     return redirect()->route('login');
 });
