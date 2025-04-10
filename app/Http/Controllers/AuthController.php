@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -27,7 +28,10 @@ class AuthController extends Controller
     $credentials = $request->only('username', 'password');
 
     if (Auth::attempt($credentials)) {
-        return redirect()->intended('beranda');
+        if(Auth::user()->getRoleNames()->first() == 'customer')
+            return redirect()->intended('beranda');
+        else
+            return redirect()->route('dashboard');
     }
 
     return back()->withErrors(['username' => 'Username atau password salah.']);
@@ -48,19 +52,22 @@ class AuthController extends Controller
             'password' => 'required|min:6'
         ]);
         
+        DB::beginTransaction();
         $user = User::create([
             'email' => $request->email,
             'username' => $request->username,
             'password' => Hash::make($request->password),
-        ]);        
+        ])->assignRole('customer');        
 
         $customer = Customer::create([
             'user_id' => $user->id,
             'name' => $request->name,
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'jenis_kelamin' => $request->jenis_kelamin,
-        ]);        
+            'address' => $request->alamat,
+            'phone' => $request->no_hp,
+            'gender' => $request->jenis_kelamin,
+        ]);   
+        
+        DB::commit();
 
 
         Auth::login($customer);
