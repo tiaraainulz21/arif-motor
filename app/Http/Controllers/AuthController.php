@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     $credentials = $request->only('username', 'password');
 
-    if (Auth::guard('customer')->attempt($credentials)) {
+    if (Auth::attempt($credentials)) {
         return redirect()->intended('beranda');
     }
 
