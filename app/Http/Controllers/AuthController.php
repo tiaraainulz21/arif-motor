@@ -31,7 +31,7 @@ class AuthController extends Controller
         if(Auth::user()->getRoleNames()->first() == 'customer')
             return redirect()->intended('beranda');
         else
-            return redirect()->route('dashboard');
+            return redirect()->route('admin.dashboard');
     }
 
     return back()->withErrors(['username' => 'Username atau password salah.']);
@@ -79,32 +79,32 @@ class AuthController extends Controller
         return redirect('/login');
     }
      // Menampilkan halaman profil customer
-     public function profile()
-     {
+    public function profile()
+    {
          $customer = Auth::user(); // Ambil data user yang sedang login
-         return view('profil_customer', compact('customer'));
-     }
- 
+        return view('profil_customer', compact('customer'));
+    }
+
      // Menampilkan halaman edit profil
-     public function editProfile()
-     {
-         $customer = Auth::user();
-         return view('edit_profil_customer', compact('customer'));
-     }
- 
+    public function editProfile()
+    {
+        $customer = Auth::user();
+        return view('edit_profil_customer', compact('customer'));
+    }
+
      // Memproses update profil
-     public function updateProfile(Request $request)
-     {
+    public function updateProfile(Request $request)
+    {
          $customer = Auth::user(); // Ambil customer yang sedang login
- 
-         $request->validate([
-             'name' => 'required|string|max:255',
-             'alamat' => 'required|string',
-             'no_hp' => 'required|string',
-             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-             'email' => 'required|email|unique:customers,email,' . $customer->id,
-         ]);
- 
-         return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
-     }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'no_hp' => 'required|string',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+        ]);
+
+        return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
+    }
 }
