@@ -150,7 +150,7 @@ button[type="submit"] {
 
 /* Tambahkan tinggi container agar semua konten muat tanpa scroll */
 .container {
-    height: 520px; /* dari 450px jadi lebih tinggi */
+    height: 615px; /* dari 450px jadi lebih tinggi */
 }
 
 /* Pastikan DAFTAR tetap terlihat */
@@ -164,4 +164,18 @@ button[type="submit"] {
 input, select, button {
     margin-top: 7px;
     margin-bottom: 7px;
+}
+
+.alert {
+	position: relative;
+	padding: .75rem 1.25rem;
+	margin-bottom: 1rem;
+	border: 1px solid transparent;
+	border-radius: .25rem;
+}
+.alert-danger{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color:#f5c6cb;
+
 }
