@@ -35,6 +35,7 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register'])->name('register_post');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
+
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
 Route::get('/struk-pesanan', [StrukPesananController::class, 'index'])->name('struk.pesanan');
 Route::get('/struk-pesanan/{id}', [StrukPesananController::class, 'show'])->name('struk.pesanan.show');
