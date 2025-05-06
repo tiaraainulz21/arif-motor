@@ -13,8 +13,8 @@ use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\StrukPesananController;
 
 Route::get('/admin', function(){
-    return view('adminpage.content.dashboard.index');
-})->name('dashboard');
+    return view('admin.index');
+})->name('Kelola Layanan Service');
 
 Route::get('/', function(){
     return redirect()->route('login');
