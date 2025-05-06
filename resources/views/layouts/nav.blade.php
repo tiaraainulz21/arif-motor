@@ -25,9 +25,13 @@
                         </svg>
                     </a>
                 
-                    <a href="{{ route('logout') }}" class="btn">
-                        <i class="fa fa-sign-out" style="color: white; font-size:25px"></i>
-                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn" style="background: none; border: none; padding: 0;">
+                            <i class="fa fa-sign-out" style="color: white; font-size:25px"></i>
+                        </button>
+                    </form>
+                    
                 </div>            
             </div>
         </div>

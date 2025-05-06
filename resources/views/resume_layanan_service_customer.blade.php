@@ -4,7 +4,6 @@
 
 @section('content')
 <style>
- 
 
 .wrapper {
     padding-top: 30px; /* kasih jarak supaya nggak mepet navbar */
