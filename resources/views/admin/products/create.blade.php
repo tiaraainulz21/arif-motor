@@ -20,6 +20,7 @@
             <h6 class="text-center text-success mb-2">
                 <i class="fa fa-box"></i> Tambah Produk
             </h6>
+            <br>
 
             <!-- Error Alert -->
             @if ($errors->any())

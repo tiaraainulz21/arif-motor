@@ -28,9 +28,10 @@
     <div class="d-flex justify-content-center align-items-center flex-grow-1">
         <div class="col-md-6">
             <div class="card shadow-lg p-4">
-                <h3 class="mb-4 text-success">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit Data Pelanggan
+                <h3 class="mb-4 text-success text-center">
+                    <i class="fa-solid fa-pen-to-square me-2"></i> Edit Data Pelanggan
                 </h3>
+                
 
                 <form action="{{ route('admin.customers.update', $customer->id) }}" method="POST">
                     @csrf

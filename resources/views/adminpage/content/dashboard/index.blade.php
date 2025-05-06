@@ -8,7 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
-<body style="background-color: #e5f0e5;">
+<body style="background-color: #e5f0e5; overflow-x: hidden;">
+
 
     <!-- Sidebar -->
     <div class="d-flex">
@@ -36,11 +37,16 @@
                         <i class="fa-solid fa-tools me-2"></i> Kelola Status Service
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.notifikasi.index') }}" class="btn btn-success text-start w-100">
+                        <i class="fa-solid fa-bell me-2"></i> Kelola Notifikasi
+                    </a>                    
+                </li>
             </ul>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-grow-1" style="margin-left: 0;" id="mainContent">
+        <div class="flex-grow-1" id="mainContent" style="margin-left: 0;">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-dark bg-success px-3 position-sticky top-0" style="z-index: 1050;">
                 <button id="toggleSidebar" class="btn btn-outline-light me-2">
@@ -54,40 +60,50 @@
                 </div>
             </nav>
 
-            <!-- Dashboard Konten -->
-            <div class="container mt-4">
-                <div class="card shadow text-center">
+            <!-- Dashboard Content in Center -->
+            <div class="container-fluid d-flex align-items-center justify-content-center" style="height: calc(100vh - 56px - 48px); padding-top: 56px;">
+                <div class="card shadow text-center w-100" style="max-width: 900px;">
                     <div class="card-body">
                         <h2 class="card-title text-success fw-bold">Selamat Datang <strong>Admin</strong>!</h2>
                         <p class="mt-3 fs-5 text-muted">Ini adalah halaman dashboard untuk mengelola data pelanggan, produk, pesanan, dan lainnya.</p>
 
                         <div class="row mt-4 justify-content-center">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card text-white bg-success mb-3 shadow">
                                     <div class="card-body">
                                         <i class="fa-solid fa-users fa-2x"></i>
-                                        <p class="mt-2 mb-1">Total Customers</p>
+                                        <p class="mt-2 mb-1">Total Pelanggan</p>
                                         <h3 class="fw-bold">{{ $totalCustomers }}</h3>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-4">
+
+                            <div class="col-md-3">
                                 <div class="card text-white bg-success mb-3 shadow">
                                     <div class="card-body">
                                         <i class="fa-solid fa-box fa-2x"></i>
-                                        <p class="mt-2 mb-1">Total Products</p>
+                                        <p class="mt-2 mb-1">Total Produk</p>
                                         <h3 class="fw-bold">{{ $totalProducts }}</h3>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="card text-white bg-success mb-3 shadow">
                                     <div class="card-body">
                                         <i class="fa-solid fa-wrench fa-2x"></i>
                                         <p class="mt-2 mb-1">Total Service</p>
                                         <h3 class="fw-bold">2</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="card text-white bg-success mb-3 shadow">
+                                    <div class="card-body">
+                                        <i class="fa-solid fa-bell fa-2x"></i>
+                                        <p class="mt-2 mb-1">Total Notifikasi</p>
+                                        <h3 class="fw-bold">{{ $totalNotifications }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -129,9 +145,13 @@
             </div>
         </div>
     </div>
-    
 
-    <!-- Bootstrap JS & Script Sidebar -->
+    <!-- 🔻 FOOTER -->
+    <footer class="bg-success text-white text-center py-3 fixed-bottom">
+        <p class="mb-0">&copy; 2025 ARIF-MOTOR | kelompok 5</p>
+    </footer>
+
+    <!-- Bootstrap JS & Sidebar Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>

@@ -4,14 +4,7 @@
 
 @section('content')
 <style>
- .container {
-    max-width: 500px;
-    margin: 5px auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
+
 
 h2 {
     text-align: center;

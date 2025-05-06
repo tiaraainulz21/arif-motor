@@ -13,6 +13,8 @@ use App\Http\Controllers\StrukPesananController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Admin\ServiceStatusController;
+
 
 // Redirect ke login kalau akses root
 Route::get('/', function(){
@@ -55,7 +57,7 @@ Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.e
 Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 // Admin Area
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Customer Management
@@ -65,7 +67,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
-   // Product Management (Admin)
+    // Product Management (Admin)
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -73,14 +75,19 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     
+    // Notifikasi Management (Admin)
+    Route::get('/notifikasi', [NotifikasiController::class, 'adminIndex'])->name('notifikasi.index');
+    Route::get('/admin/notifikasi/create', [NotifikasiController::class, 'create'])->name('notifikasi.create');
+    Route::post('/admin/notifikasi', [NotifikasiController::class, 'store'])->name('notifikasi.store');
+    Route::get('/admin/notifikasi/{id}/edit', [NotifikasiController::class, 'edit'])->name('notifikasi.edit');
+    Route::put('/admin/notifikasi/{id}', [NotifikasiController::class, 'update'])->name('notifikasi.update');
+    Route::delete('/admin/notifikasi/{id}', [NotifikasiController::class, 'destroy'])->name('notifikasi.destroy');
+    Route::get('/admin/notifikasi/{id}', [NotifikasiController::class, 'show'])->name('notifikasi.show');
 
 
 
-        // Admin - Kelola Status Service
-    Route::get('/service-status', [App\Http\Controllers\Admin\ServiceStatusController::class, 'index'])->name('service_status.index');
-    Route::get('/service-status/{id}/edit', [App\Http\Controllers\Admin\ServiceStatusController::class, 'edit'])->name('service_status.edit');
-    Route::put('/service-status/{id}', [App\Http\Controllers\Admin\ServiceStatusController::class, 'update'])->name('service_status.update');
+    Route::get('/service-status', [ServiceStatusController::class, 'index'])->name('service_status.index');
 
-
-    
 });
+
+

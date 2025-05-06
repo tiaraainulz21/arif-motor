@@ -36,4 +36,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Customer::class);
     }
+
+    // Relasi ke Notification (satu user bisa punya banyak notifikasi)
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }
