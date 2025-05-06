@@ -90,21 +90,20 @@ th, td {
         <tbody>
             @foreach ($statusPesanan as $item)
             <tr>
-                <td>{{ $item['nama'] }}</td>
-                <td>{{ $item['jenis_service'] }}</td>
+                <td>{{ $item->name }}</td>
+                <td>{{ $item->type }}</td>
                 <td>
-                    @if($item['resume'])
-                        <button class="resume-btn">{{ $item['resume'] }}</button>
-                    @endif
+                    <a href="{{ route('service.resume', $item->id) }}" class="resume-btn">Lihat Resume</a>
                 </td>
                 <td>
-                    <span class="status-label {{ strtolower($item['status']) }}">{{ $item['status'] }}</span>
+                    <span class="status-label {{ strtolower($item->status) }}">{{ $item->status }}</span>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+
 <a href="{{ route('service.form') }}" class="floating-btn">
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-sign-intersection" viewBox="0 0 16 16">
         <path d="M7.25 4v3.25H4v1.5h3.25V12h1.5V8.75H12v-1.5H8.75V4z"/>

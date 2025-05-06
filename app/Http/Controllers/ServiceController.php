@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\QueueService;
 use Carbon\Carbon;
@@ -49,6 +50,15 @@ class ServiceController extends Controller
 
         return redirect()->route('service.resume', $service->id);
     }
+
+
+    public function generatePDF($id)
+    {
+    $service = QueueService::findOrFail($id);
+    $pdf = Pdf::loadView('resume_service_pdf', compact('service'));
+    return $pdf->download('resume-service-'.$service->queue_number.'.pdf');
+    }
+
 
     public function showResume($id)
     {

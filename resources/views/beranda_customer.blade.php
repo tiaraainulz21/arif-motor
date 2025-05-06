@@ -2,9 +2,7 @@
 
 @section('content')
 <style>
-/* .container {
-    width: 90%;
-    margin: 20px auto;
+.container {
     text-align: center;
 } */
 

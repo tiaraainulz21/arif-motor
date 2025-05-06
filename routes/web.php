@@ -43,6 +43,8 @@ Route::get('/status', [StatusController::class, 'index'])->name('status');
 Route::get('/service', [ServiceController::class, 'showForm'])->name('service.form');
 Route::post('/service', [ServiceController::class, 'store'])->name('service.store');
 Route::get('/service/resume/{id}', [ServiceController::class, 'showResume'])->name('service.resume');
+Route::get('/resume-service/{id}/pdf', [ServiceController::class, 'generatePDF']);
+
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');

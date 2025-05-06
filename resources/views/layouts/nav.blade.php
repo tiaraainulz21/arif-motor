@@ -34,9 +34,9 @@
     </nav>
 
     <div class="menu">
-        <a href="{{ route('beranda') }}" class="active">Beranda</a>
-        <a href="{{ route('struk.pesanan') }}" class="active">Pesanan</a>
-        <a href="{{ route('notifikasi') }}" class="active">Notifikasi</a>
-        <a href="#" class="active">Chat</a>
-        <a href="{{ route('status') }}" class="active">Service</a>
+        <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
+        <a href="{{ route('struk.pesanan') }}" class="{{ request()->routeIs('struk.pesanan') ? 'active' : '' }}">Pesanan</a>
+        <a href="{{ route('notifikasi') }}" class="{{ request()->routeIs('notifikasi') ? 'active' : '' }}">Notifikasi</a>
+        <a href="https://wa.me/6283101455159" target="_blank">Chat</a>
+        <a href="{{ route('status') }}" class="{{ request()->is('status') ? 'active' : '' }}">Service</a>
     </div>

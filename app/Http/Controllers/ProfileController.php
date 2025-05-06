@@ -2,44 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function show()
     {
-        $user = [
-            'username' => 'Vivi',
-            'name' => 'Vivi Lestari',
-            'address' => 'Blok Kali Kulon, Desa Druntenwetan',
-            'phone' => '081280823794',
-            'gender' => 'Perempuan',
-            'email' => 'vlestari924@gmail.com',
-        ];
+        $user = Auth::user(); // Ambil user yang login
+        $customer = Customer::where('user_id', $user->id)->first(); // Ambil data customer
 
-        return view('profile.show', compact('user'));
+        return view('profile.show', compact('user', 'customer'));
     }
 
     public function edit()
     {
-        $user = [
-            'username' => 'Vivi',
-            'name' => 'Vivi Lestari',
-            'address' => 'Blok Kali Kulon, Desa Druntenwetan',
-            'phone' => '081280823794',
-            'gender' => 'Perempuan',
-            'email' => 'vlestari924@gmail.com',
-        ];
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
 
-        return view('profile.edit', compact('user'));
+        return view('profile.edit', compact('user', 'customer'));
     }
 
     public function update(Request $request)
     {
-        // Simulasi penyimpanan (nanti bisa disimpan ke database)
-        $data = $request->all();
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'phone' => 'required',
+            'gender' => 'required',
+        ]);
 
-        // Redirect kembali ke halaman profil setelah update
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+
+        // Update data customer
+        $customer->name = $request->name;
+        $customer->address = $request->address;
+        $customer->phone = $request->phone;
+        $customer->gender = $request->gender;
+        $customer->save();
+
         return redirect()->route('profile.show')->with('success', 'Profil berhasil diperbarui!');
     }
 }

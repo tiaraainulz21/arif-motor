@@ -4,13 +4,12 @@
 
 @section('content')
 <style>
- .container {
-    max-width: 500px;
-    margin: 5px auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+ 
+
+.wrapper {
+    padding-top: 30px; /* kasih jarak supaya nggak mepet navbar */
+    display: flex;
+    justify-content: center;
 }
 
 h2 {
@@ -21,9 +20,9 @@ h2 {
 }
 
 p {
-    font-size: 16px;
+    font-size: 20px;
     color: #333;
-    margin: 10px 0;
+    margin: 5px 0;
 }
 
 button {
@@ -32,7 +31,7 @@ button {
     background-color: #0B3D02;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 5px 10px;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
@@ -63,20 +62,21 @@ button {
     }
 }
 </style>
+<div class="wrapper">
+    <div class="container">
+        <h2>RESUME LAYANAN SERVICE</h2>
 
-<div class="container">
-    <h2>RESUME LAYANAN SERVICE</h2>
+        <p>No. Antrean: {{ $service->queue_number }}</p>
+        <p>Nama: {{ $service->name }}</p>
+        <p>Alamat: {{ $service->address }}</p>
+        <p>No. HP: {{ $service->phone }}</p>
+        <p>Varian Motor: {{ $service->vehicle }}</p>
+        <p>Jenis Service: {{ $service->type }}</p>
+        <p>Tanggal Registrasi: {{ date('d-m-Y', strtotime($service->date)) }}</p>
+        <p>Jam Kedatangan: {{ $service->time }}</p>
 
-    <p>No. Antrean: {{ $service->queue_number }}</p>
-    <p>Nama: {{ $service->name }}</p>
-    <p>Alamat: {{ $service->address }}</p>
-    <p>No. HP: {{ $service->phone }}</p>
-    <p>Varian Motor: {{ $service->vehicle }}</p>
-    <p>Jenis Service: {{ $service->type }}</p>
-    <p>Tanggal Registrasi: {{ date('d-m-Y', strtotime($service->date)) }}</p>
-    <p>Jam Kedatangan: {{ $service->time }}</p>
-
-    <button class="print-btn" onclick="printPDF()">Cetak</button>
+        <button class="print-btn" onclick="printPDF()">Cetak</button>
+    </div>
 </div>
 <script>
     function printPDF() {
