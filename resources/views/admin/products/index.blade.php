@@ -96,7 +96,7 @@
                             <td>{{ $index + 1 }}</td>
                             <td>
                                 @if($product->image)
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px;">
+                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px; object-fit: cover;">
                                 @else
                                     <span class="text-muted">Tidak ada</span>
                                 @endif

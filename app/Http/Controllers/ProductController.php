@@ -48,10 +48,18 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images'), $filename);
-            $validated['image'] = 'images/' . $filename;
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+        
+            // Simpan file ke storage/app/public/images
+            $image->storeAs('public/images', $filename);
+        
+            // Simpan path publik ke database
+            $validated['image'] = 'storage/images/' . $filename;
         }
+        
+        
+        
 
         Product::create($validated);
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');

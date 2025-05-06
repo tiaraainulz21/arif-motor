@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\ServiceStatusController;
-use App\Http\Controllers\HomeController;
 
 
 
@@ -44,9 +44,16 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login_post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register_post');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Pesanan dan Layanan
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Pesanan dan Layanan
+
+
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
