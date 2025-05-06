@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -15,12 +16,11 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\ServiceStatusController;
 
-<<<<<<< HEAD
-=======
+
 Route::get('/admin', function(){
     return view('admin.index');
 })->name('Kelola Layanan Service');
->>>>>>> 1aa5d3e5841672a1f9dace5cb7639ebab0cf37b4
+
 
 // Redirect ke login kalau akses root
 Route::get('/', function(){
@@ -43,15 +43,15 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login_post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register_post');
-<<<<<<< HEAD
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Pesanan dan Layanan
-=======
+
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
->>>>>>> 1aa5d3e5841672a1f9dace5cb7639ebab0cf37b4
+
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
 Route::get('/struk-pesanan', [StrukPesananController::class, 'index'])->name('struk.pesanan');
 Route::get('/struk-pesanan/{id}', [StrukPesananController::class, 'show'])->name('struk.pesanan.show');
