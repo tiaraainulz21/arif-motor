@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         $products = Product::when($search, function ($query, $search) {
             return $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
@@ -23,11 +23,11 @@ class ProductController extends Controller
                     ->orWhere('price', 'like', "%$search%");
             });
         })->get();
-    
+
         return view('admin.products.index', compact('products', 'search'));
     }
-    
-    
+
+
     // Admin: Form tambah produk
     public function create()
     {
@@ -50,16 +50,13 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '_' . $image->getClientOriginalName();
-        
-            // Simpan file ke storage/app/public/images
-            $image->storeAs('public/images', $filename);
-        
+
+            // Simpan file ke direktori public/images
+            $request->file('image')->move(public_path('images'), $filename);
+
             // Simpan path publik ke database
-            $validated['image'] = 'storage/images/' . $filename;
+            $validated['image'] = 'images/' . $filename;
         }
-        
-        
-        
 
         Product::create($validated);
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -85,11 +82,18 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
             if ($product->image && file_exists(public_path($product->image))) {
                 unlink(public_path($product->image));
             }
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
+
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+
+            // Simpan file ke direktori public/images
             $request->file('image')->move(public_path('images'), $filename);
+
+            // Simpan path publik ke database
             $validated['image'] = 'images/' . $filename;
         }
 
