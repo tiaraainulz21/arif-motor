@@ -21,13 +21,15 @@ Route::get('/', function(){
 });
 
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
-Route::get('/product/{name}', [ProductController::class, 'showByName'])->name('product.showByName');
+Route::get('/product/{id}', [ProductController::class, 'showByName'])->name('product.showByName');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/{id}/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/{id}/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 Route::get('/ringkasan-pesanan', [OrderController::class, 'summary'])->name('order.summary');
+Route::get('/pesan-sekarang/{id}', [OrderController::class, 'orderNow'])->name('order.now');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login_post');
