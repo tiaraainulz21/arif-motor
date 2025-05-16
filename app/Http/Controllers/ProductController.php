@@ -35,7 +35,7 @@ class ProductController extends Controller
     }
 
     // Admin: Simpan produk baru
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required',
@@ -48,11 +48,13 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images'), $filename);
-            $validated['image'] = 'images/' . $filename;
+            // Simpan ke storage/app/public/images
+            $path = $request->file('image')->store('images', 'public');
+        
+            // Simpan path-nya (misalnya: images/nama.jpg)
+            $validated['image'] = $path;
         }
-
+        
         Product::create($validated);
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
@@ -77,12 +79,14 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
+            // Hapus gambar lama dari storage/public
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
             }
-            $filename = time() . '_' . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images'), $filename);
-            $validated['image'] = 'images/' . $filename;
+
+            // Simpan gambar baru ke storage/app/public/images
+            $path = $request->file('image')->store('images', 'public');
+            $validated['image'] = $path;
         }
 
         $product->update($validated);
@@ -106,6 +110,14 @@ class ProductController extends Controller
         $products = Product::all();
         return view('beranda_customer', compact('products'));
     }
+
+    // Customer: Tampilkan detail produk
+    public function show($id)
+    {
+        $product = Product::findOrFail($id); // Ambil produk berdasarkan ID
+        return view('products.show', compact('product')); // Mengirim data produk ke tampilan
+    }
+
 
     // Customer: Search produk
     public function search(Request $request)

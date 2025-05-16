@@ -84,7 +84,7 @@
                         <th>Gambar</th>
                         <th>Nama</th>
                         <th>Brand</th>
-                        <th>Jenis</th>
+                        <th>Tipe</th>
                         <th>Stok</th>
                         <th>Harga</th>
                         <th>Aksi</th>
@@ -96,7 +96,7 @@
                             <td>{{ $index + 1 }}</td>
                             <td>
                                 @if($product->image)
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px;">
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail w-50">
                                 @else
                                     <span class="text-muted">Tidak ada</span>
                                 @endif
@@ -107,17 +107,20 @@
                             <td>{{ $product->stock }}</td>
                             <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                             <td>
-                                <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </a>
-                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fa-solid fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                <div class="d-flex justify-content-center align-items-center gap-1">
+                                    <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning btn-sm d-inline-flex align-items-center py-1 px-2" style="font-size: 0.8rem;">
+                                        <i class="fa-solid fa-pen-to-square me-1"></i> Edit
+                                    </a>
+                                    <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm d-inline-flex align-items-center py-1 px-2" style="font-size: 0.8rem;">
+                                            <i class="fa-solid fa-trash me-1"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
+
                         </tr>
                     @empty
                         <tr>
@@ -132,7 +135,7 @@
 
 <!-- 🔻 FOOTER -->
 <footer class="bg-success text-white text-center py-3 fixed-bottom">
-    <p class="mb-0">&copy; 2025 ARIF-MOTOR | kelompok 5</p>
+    <p class="mb-0">&copy; 2025 ARIF-MOTOR | kelompok 6</p>
 </footer>
 
 <!-- Bootstrap JS -->

@@ -75,7 +75,7 @@
 
     <!-- Footer -->
     <footer class="bg-success text-white text-center py-3 mt-auto">
-        © 2025 ARIF-MOTOR | Kelompok 5
+        © 2025 ARIF-MOTOR | Kelompok 6
     </footer>
 
     <!-- Bootstrap Script -->

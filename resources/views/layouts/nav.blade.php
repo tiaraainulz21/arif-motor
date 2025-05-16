@@ -39,7 +39,7 @@
 
     <div class="menu">
         <a href="{{ route('beranda') }}" class="active">Beranda</a>
-        <a href="{{ route('struk.pesanan') }}" class="active">Pesanan</a>
+        <a href="{{ route('struk_pesanan.index') }}" class="active">Pesanan</a>
         <a href="{{ route('notifikasi') }}" class="active">Notifikasi</a>
         <a href="#" class="active">Chat</a>
         <a href="{{ route('status') }}" class="active">Service</a>

@@ -9,12 +9,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\StrukPesananController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Admin\AdminPesananController;
 use App\Http\Controllers\Admin\ServiceStatusController;
+use App\Http\Controllers\PaymentController;
 
 
 Route::get('/admin', function(){
@@ -27,16 +29,26 @@ Route::get('/', function(){
     return redirect()->route('login');
 });
 
+Route::post('/payment/token', [App\Http\Controllers\PaymentController::class, 'getSnapToken'])->name('payment.token');
+Route::get('/pembayaran/{transaction}', [PaymentController::class, 'show'])->name('payment.show');
+
+
+
+
 // Beranda & Search (Customer)
 Route::get('/beranda', [ProductController::class, 'showAllForCustomer'])->name('beranda');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
 
+// RINGKASAN & ORDER STORE (Customer)
+Route::get('/produk/{id}/ringkasan', [OrderController::class, 'summary'])->name('order.summary');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+Route::get('/struk', [StrukPesananController::class, 'index'])->name('struk_pesanan.index');
+
 // Cart dan Checkout
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/{id}/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::get('/ringkasan-pesanan', [OrderController::class, 'summary'])->name('order.summary');
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -53,8 +65,9 @@ Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
 
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
-Route::get('/struk-pesanan', [StrukPesananController::class, 'index'])->name('struk.pesanan');
-Route::get('/struk-pesanan/{id}', [StrukPesananController::class, 'show'])->name('struk.pesanan.show');
+Route::get('/transactions', [StrukPesananController::class, 'index'])->name('transactions.index');
+Route::get('/struk-pesanan/{id}', [StrukPesananController::class, 'show'])->name('transactions.detail');
+
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
@@ -99,6 +112,11 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
 
     Route::get('/service-status', [ServiceStatusController::class, 'index'])->name('service_status.index');
+
+
+     // Pesanan Admin
+    Route::post('/pesanan/{id}', [AdminPesananController::class, 'update'])->name('pesanan.update');
+    Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('pesanan.index');
 
 });
 

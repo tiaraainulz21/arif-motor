@@ -16,8 +16,10 @@ class AdminController extends Controller
         $totalProducts = Product::count();
         $totalNotifications = Notification::count();
         $totalServices = \App\Models\Service::count(); 
+        $totalTransactions = \App\Models\Transaction::count();
 
 
-        return view('adminpage.content.dashboard.index', compact('totalCustomers',  'totalProducts', 'totalServices', 'totalNotifications'));
+
+        return view('adminpage.content.dashboard.index', compact('totalCustomers',  'totalProducts', 'totalServices', 'totalNotifications', 'totalTransactions'));
     }
 }

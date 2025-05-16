@@ -82,7 +82,7 @@
                         @if ($product->image)
                             <div class="mb-3">
                                 <label class="form-label">Gambar Saat Ini</label><br>
-                                <img src="{{ asset($product->image) }}" alt="Gambar Produk" class="img-thumbnail" style="width: 100px;">
+                                    <img src="{{ asset ('storage/' . $product->image) }}" alt="{{ $product->name }}">
                             </div>
                         @endif
 
@@ -110,7 +110,7 @@
 
 <!-- Footer -->
 <footer class="bg-success text-white text-center py-2 mt-auto">
-    <small>&copy; 2025 SPARE-M | Kelompok 5</small>
+    <small>&copy; 2025 SPARE-M | Kelompok 6</small>
 </footer>
 
 <!-- Bootstrap JS -->

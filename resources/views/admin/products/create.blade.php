@@ -60,7 +60,7 @@
 
     <!-- Footer -->
     <footer class="bg-success text-white text-center py-1 small mt-auto">
-        ©2025 | ARIF-M | KELOMPOK 5
+        ©2025 | ARIF-M | KELOMPOK 6
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
