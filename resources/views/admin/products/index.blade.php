@@ -95,11 +95,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>
-                                @if($product->image)
-                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px; object-fit: cover;">
-                                @else
-                                    <span class="text-muted">Tidak ada</span>
-                                @endif
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px; object-fit: cover;">
                             </td>
                             <td>{{ $product->name }}</td>
                             <td>{{ $product->brand }}</td>

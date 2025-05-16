@@ -48,16 +48,13 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
-
-            // Simpan file ke direktori public/images
-            $request->file('image')->move(public_path('images'), $filename);
-
-            // Simpan path publik ke database
-            $validated['image'] = 'images/' . $filename;
+            // Simpan ke storage/app/public/images
+            $path = $request->file('image')->store('images', 'public');
+        
+            // Simpan path-nya (misalnya: images/nama.jpg)
+            $validated['image'] = $path;
         }
-
+        
         Product::create($validated);
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
@@ -70,36 +67,31 @@ class ProductController extends Controller
 
     // Admin: Update produk
     public function update(Request $request, Product $product)
-    {
-        $validated = $request->validate([
-            'name' => 'required',
-            'brand' => 'required',
-            'type' => 'required',
-            'description' => 'nullable',
-            'stock' => 'required|integer',
-            'price' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required',
+        'brand' => 'required',
+        'type' => 'required',
+        'description' => 'nullable',
+        'stock' => 'required|integer',
+        'price' => 'required|integer',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
-            }
-
-            $image = $request->file('image');
-            $filename = time() . '_' . $image->getClientOriginalName();
-
-            // Simpan file ke direktori public/images
-            $request->file('image')->move(public_path('images'), $filename);
-
-            // Simpan path publik ke database
-            $validated['image'] = 'images/' . $filename;
+    if ($request->hasFile('image')) {
+        // Hapus gambar lama dari storage/public
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
         }
 
-        $product->update($validated);
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+        // Simpan gambar baru ke storage/app/public/images
+        $path = $request->file('image')->store('images', 'public');
+        $validated['image'] = $path;
     }
+
+    $product->update($validated);
+    return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+}
 
     // Admin: Hapus produk
     public function destroy(Product $product)
@@ -129,6 +121,6 @@ class ProductController extends Controller
                             ->orWhere('type', 'like', '%' . $query . '%')
                             ->get();
 
-        return view('search', compact('products', 'query'));
+        return view('products.search', compact('products', 'query'));
     }
 }

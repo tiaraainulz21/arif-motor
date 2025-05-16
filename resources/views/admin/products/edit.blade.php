@@ -82,7 +82,7 @@
                         @if ($product->image)
                             <div class="mb-3">
                                 <label class="form-label">Gambar Saat Ini</label><br>
-                                <img src="{{ asset($product->image) }}" alt="Gambar Produk" class="img-thumbnail" style="width: 100px;">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="width: 80px; object-fit: cover;">
                             </div>
                         @endif
 

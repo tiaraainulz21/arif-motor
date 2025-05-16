@@ -27,38 +27,33 @@ class ServiceController extends Controller
             'jam_kedatangan' => 'required'
         ]);
 
-        // Ambil tanggal hari ini
-        $tanggalHariIni = Carbon::today()->toDateString();
+        $userId = Auth::user()->id;
+        $tanggalDipilih = $request->tanggal_registrasi;
 
-        // Hitung jumlah antrean hari ini
-        $jumlahAntreanHariIni = QueueService::where('date', $tanggalHariIni)->count();
+        // Hitung jumlah antrean milik user ini di tanggal yang dipilih
+        $jumlahAntreanHariIni = QueueService::where('user_id', $userId)
+            ->where('date', $tanggalDipilih)
+            ->count();
 
-        // No. antrean = jumlah antrean hari ini + 1
+        // No. antrean = antrean yang sudah dimiliki user di tanggal itu + 1
         $noAntrean = $jumlahAntreanHariIni + 1;
 
+        // Simpan data service
         $service = QueueService::create([
-            'user_id'=> Auth::user()->id,
-            'queue_number' => $noAntrean, // Antrean berurutan
+            'user_id' => $userId,
+            'queue_number' => $noAntrean,
             'name' => $request->nama,
             'address' => $request->alamat,
             'phone' => $request->no_hp,
             'vehicle' => $request->varian_motor,
             'type' => $request->jenis_service,
-            'date' => $request->tanggal_registrasi,
+            'date' => $tanggalDipilih,
             'time' => $request->jam_kedatangan,
         ]);
 
+        // Arahkan ke halaman resume
         return redirect()->route('service.resume', $service->id);
     }
-
-
-    public function generatePDF($id)
-    {
-    $service = QueueService::findOrFail($id);
-    $pdf = Pdf::loadView('resume_service_pdf', compact('service'));
-    return $pdf->download('resume-service-'.$service->queue_number.'.pdf');
-    }
-
 
     public function showResume($id)
     {
@@ -66,4 +61,10 @@ class ServiceController extends Controller
         return view('resume_layanan_service_customer', compact('service'));
     }
 
+    public function generatePDF($id)
+    {
+        $service = QueueService::findOrFail($id);
+        $pdf = Pdf::loadView('resume_service_pdf', compact('service'));
+        return $pdf->download('resume-service-' . $service->queue_number . '.pdf');
+    }
 }

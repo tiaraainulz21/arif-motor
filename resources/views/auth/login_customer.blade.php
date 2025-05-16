@@ -14,6 +14,16 @@
     </div>
     <div class="right-section">
         <h2>MASUK</h2>
+
+        {{-- Menampilkan pesan error jika login gagal --}}
+        @if ($errors->any())
+            <div class="alert" style="background-color: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px; border: 1px solid #f5c6cb; border-radius: 5px;">
+                @foreach ($errors->all() as $error)
+                    <p style="margin: 0;">{{ $error }}</p>
+                @endforeach
+            </div>
+        @endif
+
         <form action="{{ route('login_post') }}" method="POST">
             @csrf
             <input type="text" name="username" placeholder="Username" required>

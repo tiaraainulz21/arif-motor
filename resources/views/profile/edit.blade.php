@@ -8,23 +8,17 @@
                 <form action="{{ route('profile.update') }}" method="POST">
                     @csrf
 
-                    <label class="fw-bold">Username</label>
-                    <input type="text" class="form-control" name="username" value="{{ $user['username'] }}">
-
                     <label class="fw-bold mt-2">Nama</label>
-                    <input type="text" class="form-control" name="name" value="{{ $user['name'] }}">
+                    <input type="text" class="form-control" name="name" value="{{ $customer['name'] }}">
 
                     <label class="fw-bold mt-2">Alamat</label>
-                    <input type="text" class="form-control" name="address" value="{{ $user['address'] }}">
+                    <input type="text" class="form-control" name="address" value="{{ $customer['address'] }}">
 
                     <label class="fw-bold mt-2">No. HP</label>
-                    <input type="text" class="form-control" name="phone" value="{{ $user['phone'] }}">
+                    <input type="text" class="form-control" name="phone" value="{{ $customer['phone'] }}">
 
                     <label class="fw-bold mt-2">Jenis Kelamin</label>
-                    <input type="text" class="form-control" name="gender" value="{{ $user['gender'] }}">
-
-                    <label class="fw-bold mt-2">Email</label>
-                    <input type="email" class="form-control" name="email" value="{{ $user['email'] }}">
+                    <input type="text" class="form-control" name="gender" value="{{ $customer['gender'] }}">
 
                     <button type="submit" class="btn btn-success mt-3 w-100">Simpan</button>
                 </form>
