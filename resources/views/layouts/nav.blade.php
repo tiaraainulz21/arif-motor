@@ -25,18 +25,24 @@
                         </svg>
                     </a>
                 
-                    <a href="{{ route('logout') }}" class="btn">
-                        <i class="fa fa-sign-out" style="color: white; font-size:25px"></i>
-                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn" style="background: none; border: none; padding: 0;">
+                            <i class="fa fa-sign-out" style="color: white; font-size:25px"></i>
+                        </button>
+                    </form>
+                    
                 </div>            
             </div>
         </div>
     </nav>
 
     <div class="menu">
-        <a href="{{ route('beranda') }}" class="active">Beranda</a>
-        <a href="{{ route('struk.pesanan') }}" class="active">Pesanan</a>
-        <a href="{{ route('notifikasi') }}" class="active">Notifikasi</a>
-        <a href="#" class="active">Chat</a>
-        <a href="{{ route('status') }}" class="active">Service</a>
+
+        <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
+        <a href="{{ route('transactions.index') }}" class="{{ request()->routeIs('transactions.index') ? 'active' : '' }}">Pesanan</a>
+        <a href="{{ route('notifikasi') }}" class="{{ request()->routeIs('notifikasi') ? 'active' : '' }}">Notifikasi</a>
+        <a href="https://wa.me/6283101455159" target="_blank">Chat</a>
+        <a href="{{ route('status') }}" class="{{ request()->is('status') ? 'active' : '' }}">Service</a>
+
     </div>

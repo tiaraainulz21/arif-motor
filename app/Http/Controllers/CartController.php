@@ -31,16 +31,36 @@ class CartController extends Controller
 
     public function remove($id)
     {
-        $cart = Session::get('cart', []);
-        unset($cart[$id]); // Hapus produk dari keranjang
-        Session::put('cart', $cart);
+        $cartItem = Cart::findOrFail($id);
+        $cartItem->delete();
 
-        return redirect()->route('cart.index')->with('success', 'Produk dihapus dari keranjang.');
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Item berhasil dihapus']);
+        }
+
+        return redirect()->back()->with('success', 'Item dihapus');
     }
 
-    public function checkout()
-    {
-        Session::forget('cart'); // Kosongkan keranjang setelah checkout
-        return redirect()->route('cart.index')->with('success', 'Pembelian berhasil!');
+    public function checkout(Request $request)
+{
+    $selectedItems = $request->input('checkout_items', []);
+    $quantities = $request->input('qty_hidden', []);
+
+    if (count($selectedItems) !== 1) {
+        return redirect()->back()->with('error', 'Mohon pilih hanya satu produk untuk checkout.');
     }
+
+    $cartItem = Cart::findOrFail($selectedItems[0]);
+    $productId = $cartItem->product_id;
+
+    // Ambil qty dari form
+    $qty = isset($quantities[$cartItem->id]) ? intval($quantities[$cartItem->id]) : $cartItem->qty;
+
+    // Simpan qty di session untuk ditampilkan di halaman ringkasan
+    session(['checkout_qty' => $qty]);
+
+    return redirect()->route('order.summary', ['id' => $productId]);
+}
+
+    
 }

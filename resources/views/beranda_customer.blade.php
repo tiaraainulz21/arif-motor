@@ -2,18 +2,18 @@
 
 @section('content')
 <style>
-/* .container {
-    width: 90%;
-    margin: 20px auto;
+
+.container {
     text-align: center;
 } */
 
 .content h2 {
-    color: darkgreen;
+    color: rgb(0, 0, 0);
 }
 
 .product-list {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
     margin-top: 20px;
@@ -24,54 +24,97 @@
     padding: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: left;
-    width: 200px;
+    width: 250px;
+    border-radius: 10px;
 }
 
 .product img {
     width: 100%;
-    height: auto;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .product p {
     margin: 5px 0;
+    font-size: 14px;
 }
+.product .name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+    .content h2 {
+        color: rgb(0, 0, 0);
+    }
+    
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .product {
+        background: white;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        width: 250px;
+        border-radius: 10px;
+    }
+    
+    .product img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .product p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    .product .name {
+        font-weight: bold;
+        font-size: 16px;
+    }
+    
+    /* Tambahan ini untuk mengubah warna teks link */
+    .product a {
+        color: black;
+        text-decoration: none;
+    }
+    .product a:hover {
+        color: rgb(0, 0, 0);
+    }
+
 </style>
 
-<div class="content">
+<div class="content text-center">
     <h2>ARIF MOTOR</h2>
     <p>Selamat datang di platform belanja sparepart dan layanan service online</p>
 
     <div class="product-list">
-        <div class="product">
-            <img src="{{ asset('images/busi.jpg') }}" alt="Denso Busi Motor">
-            <p>Denso Busi Motor</p>
-            <p>Rp.50.000</p>
-        </div>
-        <div class="product">
-            <img src="{{ asset('images/Radiator.jpg') }}" alt="Radiator Assy Honda Vario 160">
-            <p>Radiator Assy Honda Vario 160</p>
-            <p>Rp.300.000</p>
-        </div>
-        <div class="product">
-            <img src="{{ asset('images/pompa oli.jpg') }}" alt="Pompa Oli Honda CB150">
-            <p>Pompa Oli Honda CB150</p>
-            <p>Rp.200.000</p>
-        </div>
-        <div class="product">
-            <img src="{{ asset('images/busi.jpg') }}" alt="Denso Busi Motor">
-            <p>Denso Busi Motor</p>
-            <p>Rp.50.000</p>
-        </div>
-        <div class="product">
-            <img src="{{ asset('images/Radiator.jpg') }}" alt="Radiator Assy Honda Vario 160">
-            <p>Radiator Assy Honda Vario 160</p>
-            <p>Rp.300.000</p>
-        </div>
-        <div class="product">
-            <img src="{{ asset('images/pompa oli.jpg') }}" alt="Pompa Oli Honda CB150">
-            <p>Pompa Oli Honda CB150</p>
-            <p>Rp.200.000</p>
-        </div>
+        @foreach($products as $product)
+            <div class="product">
+
+                <!-- Link ke halaman detail produk -->
+                <a href="{{ route('products.show', $product->id) }}">
+                    <img src="{{ asset ('storage/' . $product->image) }}" alt="{{ $product->name }}">
+                    <p class="name">{{ $product->name }}</p>
+                    <p>Merk: {{ $product->brand }}</p>
+                    <p>Jenis: {{ $product->type }}</p>
+                    <p>Stok: {{ $product->stock }}</p>
+                    <p>Rp.{{ number_format($product->price, 0, ',', '.') }}</p>
+                    @if($product->description)
+                        <p><em>{{ $product->description }}</em></p>
+                    @endif
+                </a>
+
+            </div>
+        @endforeach
     </div>
 </div>
 @endsection

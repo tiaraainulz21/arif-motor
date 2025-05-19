@@ -12,6 +12,7 @@ class CreateNotificationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
+            $table->text('message'); // Tambahkan ini di migration asli
             $table->date('date');
             $table->timestamps();
         });

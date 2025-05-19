@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\Notification;  // Tambahkan model notifikasi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,23 +21,23 @@ class AuthController extends Controller
     }
 
     public function login(Request $request) {
-    $request->validate([
-        'username' => 'required',
-        'password' => 'required',
-    ]);
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
-    $credentials = $request->only('username', 'password');
+        $credentials = $request->only('username', 'password');
 
-    if (Auth::attempt($credentials)) {
-        if(Auth::user()->getRoleNames()->first() == 'customer')
-            return redirect()->intended('beranda');
-        else
-            return redirect()->route('dashboard');
+        if (Auth::attempt($credentials)) {
+            if(Auth::user()->getRoleNames()->first() == 'customer')
+                return redirect()->intended('beranda'); 
+            else
+                return redirect()->route('admin.dashboard');
+        }
+
+        return back()->withErrors(['username' => 'Username atau password salah.']);
     }
 
-    return back()->withErrors(['username' => 'Username atau password salah.']);
-}    
-    
     public function showRegister() {
         return view('auth.register_customer');
     }
@@ -69,42 +70,19 @@ class AuthController extends Controller
         
         DB::commit();
 
-
         Auth::login($customer);
         return redirect('/login');
     }
-    
+
     public function logout() {
         Auth::logout();
         return redirect('/login');
     }
-     // Menampilkan halaman profil customer
-     public function profile()
-     {
-         $customer = Auth::user(); // Ambil data user yang sedang login
-         return view('profil_customer', compact('customer'));
-     }
- 
-     // Menampilkan halaman edit profil
-     public function editProfile()
-     {
-         $customer = Auth::user();
-         return view('edit_profil_customer', compact('customer'));
-     }
- 
-     // Memproses update profil
-     public function updateProfile(Request $request)
-     {
-         $customer = Auth::user(); // Ambil customer yang sedang login
- 
-         $request->validate([
-             'name' => 'required|string|max:255',
-             'alamat' => 'required|string',
-             'no_hp' => 'required|string',
-             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-             'email' => 'required|email|unique:customers,email,' . $customer->id,
-         ]);
- 
-         return redirect()->route('customer.profile')->with('success', 'Profil berhasil diperbarui!');
-     }
+
+    // Menampilkan notifikasi customer
+    public function notifikasi()
+    {
+        $notifikasi = Notification::where('user_id', Auth::id())->latest()->get();
+        return view('customer.notifikasi.index', compact('notifikasi'));
+    }
 }
