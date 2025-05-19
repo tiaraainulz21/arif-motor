@@ -3,35 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Transaction;
 
 class StrukPesananController extends Controller
 {
+    // Menampilkan daftar transaksi (struk-pesanan)
     public function index()
     {
-        $struk = [
-            [
-                'id' => 1,
-                'kode' => 'TRANS001',
-                'tanggal' => '2025-04-05',
-                'total' => 100000,
-                'status' => 'Dikirim',
-            ],
-            [
-                'id' => 2,
-                'kode' => 'TRANS002',
-                'tanggal' => '2025-04-06',
-                'total' => 200000,
-                'status' => 'Selesai',
-            ],
-        ];
+        $transactions = Transaction::where('user_id', auth()->id())->orderBy('date', 'desc')->get();
 
-        return view('struk_pesanan_customer', compact('struk'));
+        return view('struk_pesanan_customer', compact('transactions'));
     }
 
+    // Menampilkan detail pesanan dari 1 transaksi
     public function show($id)
     {
-        // Contoh redirect ke halaman detail
-        return "Menampilkan detail struk pesanan dengan ID: $id";
-    }
-}
+        $transaction = Transaction::with('details.product')->findOrFail($id);
+        $details = $transaction->details;
 
+        return view('pesanan_customer', compact('transaction', 'details'));
+    }
+
+}

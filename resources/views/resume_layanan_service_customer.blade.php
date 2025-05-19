@@ -1,4 +1,4 @@
-@extends('layouts.app')
+
 
 @section('title', 'Resume Layanan Service')
 
@@ -82,4 +82,4 @@ button {
         window.print();
     }
     </script>
-@endsection
+

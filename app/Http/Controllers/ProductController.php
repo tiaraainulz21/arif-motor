@@ -35,7 +35,7 @@ class ProductController extends Controller
     }
 
     // Admin: Simpan produk baru
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required',
@@ -110,6 +110,14 @@ class ProductController extends Controller
         $products = Product::all();
         return view('beranda_customer', compact('products'));
     }
+
+    // Customer: Tampilkan detail produk
+    public function show($id)
+    {
+        $product = Product::findOrFail($id); // Ambil produk berdasarkan ID
+        return view('products.show', compact('product')); // Mengirim data produk ke tampilan
+    }
+
 
     // Customer: Search produk
     public function search(Request $request)

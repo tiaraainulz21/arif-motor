@@ -95,7 +95,7 @@
 
 <!-- Footer -->
 <footer class="bg-success text-white text-center py-2 mt-auto">
-    <small>&copy; 2025 ARIF-MOTOR | Kelompok 5</small>
+    <small>&copy; 2025 ARIF-MOTOR | Kelompok 6</small>
 </footer>
 
 <!-- Bootstrap JS -->

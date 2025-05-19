@@ -67,4 +67,43 @@ class ServiceController extends Controller
         $pdf = Pdf::loadView('resume_service_pdf', compact('service'));
         return $pdf->download('resume-service-' . $service->queue_number . '.pdf');
     }
+
+    // Tampilkan form edit
+public function editStatus($id)
+{
+    $service = \App\Models\QueueService::findOrFail($id);
+    return view('admin.service_status.edit', compact('service'));
+}
+
+// Simpan perubahan status
+public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:Diproses,Selesai',
+    ]);
+
+    $service = \App\Models\QueueService::findOrFail($id);
+    $service->status = $request->status;
+    $service->save();
+
+    return redirect()->route('admin.service_status.index')->with('success', 'Status berhasil diperbarui.');
+}
+
+public function index(Request $request)
+{
+    $query = \App\Models\QueueService::query();
+
+    // Cek apakah ada input pencarian
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where('name', 'like', '%' . $search . '%');
+    }
+
+    // Ambil semua data yang cocok
+    $services = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.service_status.index', compact('services'));
+}
+
+
 }

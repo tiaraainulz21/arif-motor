@@ -33,21 +33,38 @@
     </div>
 </header>
 
-<!-- 🔙 TOMBOL KEMBALI -->
-<div class="position-absolute mt-5 ms-3" style="top: 70px;">
-    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
-        <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
-    </a>
-</div>
-
 <!-- 🔹 CARD DI TENGAH -->
 <div class="fixed-center">
     <div class="card p-4 shadow">
-        <h2 class="text-center text-success mb-4">
-            <i class="fa-solid fa-tools"></i> Kelola Status Service
-        </h2>
 
-        <!-- ✅ ALERT -->
+        <!-- 🔙 TOMBOL DAN JUDUL -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
+            <h2 class="text-success m-0 text-center">
+                <i class="fa-solid fa-tools"></i> Kelola Status Service
+            </h2>
+            <div style="width: 150px;"></div> <!-- Spacer supaya judul tetap center -->
+        </div>
+
+        <!-- 🔍 SEARCH BAR -->
+        <div class="d-flex justify-content-end mb-3">
+            <form action="{{ route('admin.service_status.index') }}" method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control form-control-sm me-2"
+                       placeholder="Cari nama pelanggan..." value="{{ request('search') }}">
+                <button type="submit" class="btn btn-outline-success btn-sm">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('admin.service_status.index') }}" class="btn btn-outline-secondary btn-sm ms-2">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </a>
+                @endif
+            </form>
+        </div>
+
+        <!-- ALERT -->
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -62,34 +79,42 @@
                         <th>No</th>
                         <th>Nama Pelanggan</th>
                         <th>Jenis Service</th>
+                        <th>Resume</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- DATA DUMMY --}}
-                    <tr>
-                        <td>1</td>
-                        <td>Tiara Ainul Zannah</td>
-                        <td>Ganti Oli</td>
-                        <td><span class="badge bg-success">Selesai</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-primary">
-                                <i class="fa-solid fa-pen-to-square"></i> Ubah Status
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Tiara Ainul Zannah</td>
-                        <td>Service Rutin</td>
-                        <td><span class="badge bg-warning text-dark">Diproses</span></td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-primary">
-                                <i class="fa-solid fa-pen-to-square"></i> Ubah Status
-                            </a>
-                        </td>
-                    </tr>
+                    @forelse ($services as $index => $service)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $service->name }}</td>
+                            <td>{{ $service->type }}</td>
+                            <td>
+                                <a href="{{ route('service.resume', $service->id) }}" class="btn btn-sm text-white" style="background-color: rgb(0, 0, 0);">
+                                    <u>Lihat Resume</u>
+                                </a>
+                            </td>
+                            <td>
+                                @if ($service->status === 'Selesai')
+                                    <span class="badge bg-success">Selesai</span>
+                                @elseif ($service->status === 'Diproses')
+                                    <span class="badge bg-warning text-dark">Diproses</span>
+                                @else
+                                    <span class="badge bg-secondary">Menunggu</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.service_status.edit', $service->id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-pen-to-square"></i> Ubah Status
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-muted">Tidak ada data service.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

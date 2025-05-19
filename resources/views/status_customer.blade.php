@@ -50,7 +50,7 @@ th, td {
 }
 
 .status-label.selesai {
-    background: orange;
+    background: rgb(0, 65, 230);
     color: white;
 }
 

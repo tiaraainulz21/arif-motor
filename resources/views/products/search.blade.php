@@ -2,11 +2,13 @@
 
 @section('content')
 <style>
-    .card-product {
+.card-product {
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.2s ease;
+    text-decoration: none;
+    color: inherit;
 }
 
 .card-product:hover {
@@ -14,7 +16,7 @@
 }
 
 .card-product img {
-    height: 180px;
+    height: 200px;
     object-fit: contain;
     padding: 15px;
     background-color: #fff;
@@ -42,7 +44,12 @@
     font-size: 13px;
 }
 
+a.card-link {
+    text-decoration: none;
+    color: inherit;
+}
 </style>
+
 <div class="container mt-4">
     <h2 class="text-success mb-3">
         <i class="fa-solid fa-magnifying-glass"></i> Hasil Pencarian
@@ -53,17 +60,20 @@
         <div class="row">
             @foreach($products as $product)
                 <div class="col-md-4 mb-4">
-                    <div class="card card-product h-100">
-                        <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="object-fit: contain; height: 200px;">
-                        <div class="card-body">
-                            <h5 class="card-title text-capitalize">{{ $product->name }}</h5>
-                            <p class="card-text mb-1"><strong>Merk:</strong> {{ $product->brand }}</p>
-                            <p class="card-text mb-1"><strong>Jenis:</strong> {{ $product->type }}</p>
-                            <p class="card-text mb-1"><strong>Stok:</strong> {{ $product->stock }}</p>
-                            <p class="card-text mb-1"><strong>Rp</strong> {{ number_format($product->price, 0, ',', '.') }}</p>
-                            <p class="card-text fst-italic mt-2">{{ $product->description }}</p>
+                    <!-- LINK dibungkus di seluruh card -->
+                    <a href="{{ route('products.show', $product->id) }}" class="card-link">
+                        <div class="card card-product h-100">
+                            <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
+                            <div class="card-body">
+                                <h5 class="card-title text-capitalize">{{ $product->name }}</h5>
+                                <p class="card-text mb-1"><strong>Merk:</strong> {{ $product->brand }}</p>
+                                <p class="card-text mb-1"><strong>Jenis:</strong> {{ $product->type }}</p>
+                                <p class="card-text mb-1"><strong>Stok:</strong> {{ $product->stock }}</p>
+                                <p class="card-text mb-1"><strong>Rp</strong> {{ number_format($product->price, 0, ',', '.') }}</p>
+                                <p class="card-text fst-italic mt-2">{{ $product->description }}</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             @endforeach
         </div>

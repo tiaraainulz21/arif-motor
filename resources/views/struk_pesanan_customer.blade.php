@@ -2,78 +2,71 @@
 
 @section('content')
 <style>
-    .struk-container {
+    .container {
         width: 90%;
-        margin: 20px auto;
+        
     }
 
-    .struk-item {
+    .item-card {
         background: white;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: 10px;
-        transition: transform 0.2s ease;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        border-radius: 8px;
         cursor: pointer;
     }
 
-    .struk-item:hover {
-        transform: scale(1.01);
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
     }
 
-    .struk-info {
-        display: flex;
-        flex-direction: column;
+    .status-dikirim {
+        background-color: orange;
     }
 
-    .struk-info span {
-        font-weight: bold;
+    .status-selesai {
+        background-color: green;
+    }
+
+    .item-info h5 {
+        margin: 0;
         font-size: 16px;
     }
 
-    .struk-status button {
-        background-color: #0e4d1d;
-        border: none;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 6px;
-        font-weight: bold;
+    .item-subinfo {
+        font-size: 14px;
+        color: gray;
     }
 
-    .struk-harga {
+    .item-total {
+        font-weight: bold;
+        font-size: 16px;
         text-align: right;
     }
-
-    .struk-harga h4 {
-        color: #000000;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .struk-tanggal {
-        font-size: 14px;
-        color: #000000;
-    }
-
 </style>
 
-<div class="struk-container">
-    @foreach ($struk as $item)
-        <div onclick="window.location='{{ route('pesanan', $item['id']) }}'" class="struk-item">
-            <div class="struk-info">
-                <span>{{ $item['kode'] }}</span>
-                <div class="struk-status">
-                    <button>{{ $item['status'] }}</button>
-                </div>
+<div class="container">
+    @forelse ($transactions as $transaction)
+        <div class="item-card" onclick="window.location.href='{{ route('transactions.detail', $transaction->id) }}'">
+            <div class="item-info">
+                <h5>{{ $transaction->transaction_code }}</h5>
+                <span class="status-badge {{ $transaction->status == 'Dikirim' ? 'status-dikirim' : 'status-selesai' }}">
+                    {{ $transaction->status }}
+                </span>
             </div>
-            <div class="struk-harga">
-                <div class="struk-tanggal">{{ $item['tanggal'] }}</div>
-                <h4>Total Pesanan: Rp.{{ number_format($item['total'], 0, ',', '.') }}</h4>
+            <div class="item-total">
+                <div class="item-subinfo">{{ \Carbon\Carbon::parse($transaction->date)->format('d-m-Y') }}</div>
+                <div>Total: Rp{{ number_format($transaction->total, 0, ',', '.') }}</div>
             </div>
         </div>
-    @endforeach
+    @empty
+        <p>Tidak ada transaksi.</p>
+    @endforelse
 </div>
 @endsection

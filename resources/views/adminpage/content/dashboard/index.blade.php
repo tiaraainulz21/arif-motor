@@ -10,7 +10,6 @@
 </head>
 <body style="background-color: #e5f0e5; overflow-x: hidden;">
 
-
     <!-- Sidebar -->
     <div class="d-flex">
         <div id="sidebar" class="bg-success text-white p-3 position-fixed top-0 start-0 vh-100" 
@@ -41,6 +40,16 @@
                     <a href="{{ route('admin.notifikasi.index') }}" class="btn btn-success text-start w-100">
                         <i class="fa-solid fa-bell me-2"></i> Kelola Notifikasi
                     </a>                    
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.pesanan.index') }}" class="btn btn-success text-start w-100">
+                        <i class="fa-solid fa-clipboard-list me-2"></i> Kelola Pesanan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.admin.pendapatan.index') }}" class="btn btn-success text-start w-100">
+                        <i class="fa-solid fa-money-bill-wave me-2"></i> Kelola Pendapatan
+                    </a>
                 </li>
             </ul>
         </div>
@@ -91,9 +100,20 @@
                             <div class="col-md-3">
                                 <div class="card text-white bg-success mb-3 shadow">
                                     <div class="card-body">
+                                        <i class="fa-solid fa-clipboard-list fa-2x"></i>
+                                        <p class="mt-2 mb-1">Total Pesanan</p>
+                                        <h3 class="fw-bold">{{ $totalTransactions }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="card text-white bg-success mb-3 shadow">
+                                    <div class="card-body">
                                         <i class="fa-solid fa-wrench fa-2x"></i>
                                         <p class="mt-2 mb-1">Total Service</p>
-                                        <h3 class="fw-bold">2</h3>
+                                        <h3 class="fw-bold">{{ $totalServices }}</h3>
+
                                     </div>
                                 </div>
                             </div>
@@ -107,6 +127,17 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-3">
+                                <div class="card text-white bg-success mb-3 shadow">
+                                    <div class="card-body">
+                                        <i class="fa-solid fa-sack-dollar fa-2x"></i>
+                                        <p class="mt-2 mb-1">Total Pendapatan</p>
+                                        <h3 class="fw-bold">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -148,7 +179,7 @@
 
     <!-- 🔻 FOOTER -->
     <footer class="bg-success text-white text-center py-3 fixed-bottom">
-        <p class="mb-0">&copy; 2025 ARIF-MOTOR | kelompok 5</p>
+        <p class="mb-0">&copy; 2025 ARIF-MOTOR | kelompok 6</p>
     </footer>
 
     <!-- Bootstrap JS & Sidebar Script -->
