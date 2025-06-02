@@ -101,6 +101,7 @@
             <div class="product">
 
                 <!-- Link ke halaman detail produk -->
+                <!-- Link ke halaman detail produk -->
                 <a href="{{ route('products.show', $product->id) }}">
                     <img src="{{ asset ('storage/' . $product->image) }}" alt="{{ $product->name }}">
                     <p class="name">{{ $product->name }}</p>
