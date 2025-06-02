@@ -65,7 +65,7 @@ jobs:
         done
 
     - name: Run database migrations and seed
-      run: php artisan migrate:fresh --seed
+      run: php artisan migrate:fresh
 
     - name: Execute tests
       run: php artisan test
