@@ -101,7 +101,6 @@
 
     <h5>Metode Pembayaran</h5>
     <div class="btn-group mb-3" role="group" id="paymentMethods">
-        <button type="button" class="btn btn-success payment-method" data-method="COD">COD</button>
         <button type="button" class="btn btn-outline-success payment-method" data-method="Transfer Bank">Transfer Bank</button>
         <button type="button" class="btn btn-outline-success payment-method" data-method="Dana">Dana</button>
     </div>
