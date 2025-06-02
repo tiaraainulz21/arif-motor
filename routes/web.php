@@ -17,6 +17,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\AdminPesananController;
 use App\Http\Controllers\Admin\ServiceStatusController;
 use App\Http\Controllers\PendapatanController;
+use App\Http\Controllers\CustomerAddressController;
 use App\Http\Controllers\PaymentController;
 
 
@@ -60,13 +61,14 @@ Route::post('/register', [AuthController::class, 'register'])->name('register_po
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Pesanan dan Layanan
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Pesanan dan Layanan
 
+Route::get('/addresses', [CustomerAddressController::class, 'index'])->name('addresses.index');
+Route::get('/addresses/create', [CustomerAddressController::class, 'create'])->name('addresses.create');
+Route::post('/addresses', [CustomerAddressController::class, 'store'])->name('addresses.store');
 
 
 

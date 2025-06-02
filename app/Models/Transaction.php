@@ -12,6 +12,9 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'customer_id',
+        'shipping_address_id', 
+        'shipping_address', 
+        'recipient_name', 
         'transaction_code',
         'date',
         'total',
@@ -33,4 +36,10 @@ class Transaction extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function shippingAddress()
+    {
+        return $this->belongsTo(CustomerAddress::class, 'shipping_address_id');
+    }
+
 }

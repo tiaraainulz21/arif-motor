@@ -15,18 +15,6 @@
     }
 
     img.product-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    }
-
-
-    .card h4 {
-        margin-bottom: 20px;
-    }
-
-    img.product-img {
         width: 100px;
         height: 100px;
         object-fit: cover;
@@ -52,12 +40,43 @@
 <div class="container mt-4 content">
     <h4 class="text-success">RINGKASAN PESANAN</h4>
 
-    <div class="card p-3 mb-3">
-        <h4>{{ $order['customer']['name'] }}</h4>
-        <p>{{ $order['customer']['phone'] }}</p>
-        <p>{{ $order['customer']['address'] }}</p>          
-    </div>    
+    {{-- Error & alert handling --}}
+    @if ($errors->any())
+      <div class="alert alert-danger">
+        <ul>
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
 
+    @if(session('error'))
+      <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    {{-- Tombol Ganti Alamat --}}
+    <div class="card p-3 mb-3">
+        <h5>Alamat Pengiriman Saat Ini</h5>
+
+        @php
+            // Gunakan alamat yang dikirim dari controller (selectedAddress), fallback ke default user address
+            $defaultAddress = $order['selectedAddress'] ?? (Auth::user()->customer->addresses->firstWhere('is_default', true) ?? Auth::user()->customer->addresses->first());
+        @endphp
+
+        <div>
+            <h4 id="recipientName">{{ $defaultAddress->recipient_name ?? '' }}</h4>
+            <p id="recipientPhone">{{ $defaultAddress->phone ?? '' }}</p>
+            <p id="recipientAddress">{{ $defaultAddress->address ?? '' }}</p>
+        </div>
+
+        <a href="{{ route('addresses.index', ['return_to' => route('order.summary', ['id' => $order['product']['id']])]) }}">
+            Ganti Alamat
+        </a>
+
+    </div>
+
+    {{-- Detail Produk --}}
     <div class="card p-3 mb-3">
         <div class="d-flex align-items-center gap-3">
             <img src="{{ asset('storage/' . $order['product']['image']) }}" alt="{{ $order['product']['name'] }}" class="product-img">
@@ -68,9 +87,9 @@
         </div>
 
         <div class="quantity-control mt-3">
-            <button class="btn btn-outline-secondary" onclick="decreaseQuantity()">-</button>
+            <button class="btn btn-outline-secondary" onclick="decreaseQuantity()" type="button">-</button>
             <input type="text" id="quantity" value="{{ $order['product']['qty'] }}" readonly>
-            <button class="btn btn-outline-secondary" onclick="increaseQuantity()">+</button>
+            <button class="btn btn-outline-secondary" onclick="increaseQuantity()" type="button">+</button>
         </div>
     </div>
 
@@ -82,14 +101,15 @@
     </div>
 
     <div class="card p-3">
-        <p>Subtotal untuk Produk: <strong>Rp.<span id="subtotal">{{ number_format($order['subtotal'], 0, ',', '.') }}</span></strong></p>
-        <p>Subtotal Pengiriman: Rp.{{ number_format($order['shipping'], 0, ',', '.') }}</p>
-        <p>Biaya Layanan: Rp.{{ number_format($order['service_fee'], 0, ',', '.') }}</p>
+        <p>Subtotal Produk: <strong>Rp.<span id="subtotal">{{ number_format($order['subtotal'], 0, ',', '.') }}</span></strong></p>
+        <p>Ongkir: Rp.<span id="shipping">{{ number_format($order['shipping'], 0, ',', '.') }}</span></p>
+        <p>Biaya Layanan: Rp.<span id="service_fee">{{ number_format($order['service_fee'], 0, ',', '.') }}</span></p>
         <h4>Total Pembayaran: <strong>Rp.<span id="total">{{ number_format($order['total'], 0, ',', '.') }}</span></strong></h4>
     </div>
 
     <form id="orderForm" action="{{ route('order.store') }}" method="POST">
         @csrf
+
         <input type="hidden" name="product_id" value="{{ $order['product']['id'] }}">
         <input type="hidden" name="price" value="{{ $order['product']['price'] }}">
         <input type="hidden" id="form_quantity" name="qty" value="{{ $order['product']['qty'] }}">
@@ -97,6 +117,10 @@
         <input type="hidden" name="shipping" value="{{ $order['shipping'] }}">
         <input type="hidden" name="service_fee" value="{{ $order['service_fee'] }}">
         <input type="hidden" id="form_total" name="total" value="{{ $order['total'] }}">
+
+        {{-- Kirim ID alamat pengiriman, backend yang cari alamat lengkap --}}
+        <input type="hidden" name="recipient_name" value="{{ $defaultAddress->recipient_name ?? '' }}">
+        <input type="hidden" name="shipping_address_id" value="{{ $defaultAddress->id ?? '' }}">
 
         <div class="text-center mt-3 mb-5">
             <button type="submit" class="btn btn-success w-100">Buat Pesanan</button>
@@ -112,6 +136,9 @@
     const shipping = {{ $order['shipping'] }};
     const serviceFee = {{ $order['service_fee'] }};
 
+    // Simpan semua alamat dalam JS supaya bisa update detail alamat terpilih (optional)
+    const addresses = @json(Auth::user()->customer->addresses->keyBy('id'));
+
     function formatRupiah(number) {
         return number.toLocaleString('id-ID');
     }
@@ -124,6 +151,7 @@
         document.getElementById('subtotal').innerText = formatRupiah(subtotal);
         document.getElementById('total').innerText = formatRupiah(total);
 
+        // update hidden form inputs
         document.getElementById('form_quantity').value = quantity;
         document.getElementById('form_total').value = total;
     }
@@ -144,6 +172,7 @@
         }
     }
 
+    // Payment method button toggle
     const paymentButtons = document.querySelectorAll('.payment-method');
     const paymentMethodInput = document.getElementById('payment_method_input');
 
@@ -161,6 +190,7 @@
         });
     });
 
+    // Form submission
     document.getElementById('orderForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -179,10 +209,11 @@
                 },
                 body: JSON.stringify({
                     total: document.getElementById('form_total').value,
-                    name: "{{ $order['customer']['name'] }}",
+                    name: "{{ $defaultAddress->recipient_name ?? Auth::user()->name }}",
                     email: "{{ Auth::user()->email }}"
                 })
-            }).then(res => res.json())
+            })
+            .then(res => res.json())
             .then(data => {
                 snap.pay(data.token, {
                     onSuccess: function(result) {
@@ -192,10 +223,11 @@
                         alert("Transaksi menunggu pembayaran.");
                     },
                     onError: function(result) {
-                        alert("Terjadi kesalahan.");
+                        alert("Terjadi kesalahan dalam pembayaran.");
                     }
                 });
-            });
+            })
+            .catch(() => alert("Gagal mendapatkan token pembayaran."));
         }
     });
 </script>
