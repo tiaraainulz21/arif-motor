@@ -8,6 +8,7 @@
     <!-- Bootstrap & Chart.js -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         canvas {
@@ -41,6 +42,13 @@
             @else
                 <p class="text-center text-muted">Belum ada data pendapatan yang tersedia.</p>
             @endif
+        </div>
+
+        {{-- BUTTON Download PDF --}}
+        <div class="text-center mt-4">
+            <a href="{{ route('admin.pendapatan.pdf') }}" class="btn btn-outline-success">
+                <i class="fa-solid fa-file-pdf me-2"></i>Download PDF
+            </a>
         </div>
 
     </div>

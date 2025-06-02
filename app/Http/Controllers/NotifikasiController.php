@@ -16,10 +16,30 @@ class NotifikasiController extends Controller
         return view('notifikasi_customer', compact('notifikasi'));
     }
 
-    // ✅ Untuk admin melihat semua notifikasi
-    public function adminIndex()
+    // ✅ Untuk admin melihat semua notifikasi dengan fitur pencarian
+    public function adminIndex(Request $request)
     {
-        $notifikasi = Notification::with('user')->latest()->get();
+        $search = $request->input('search');
+
+        $notifikasi = Notification::with('user');
+
+        if ($search) {
+            $notifikasi = $notifikasi->where(function($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                      ->orWhere('message', 'like', "%{$search}%")
+                      // Cari berdasarkan nama customer terkait user
+                      ->orWhereHas('user.customer', function($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      })
+                      // Cari berdasarkan username user
+                      ->orWhereHas('user', function($q) use ($search) {
+                          $q->where('username', 'like', "%{$search}%");
+                      });
+            });
+        }
+
+        $notifikasi = $notifikasi->latest()->get();
+
         return view('admin.notifikasi.index', compact('notifikasi'));
     }
 
@@ -80,10 +100,24 @@ class NotifikasiController extends Controller
         return redirect()->route('admin.notifikasi.index')->with('success', 'Notifikasi berhasil diperbarui!');
     }
 
-    // ✅ Hapus notifikasi
-    public function destroy(Notification $notifikasi)
+    // ✅ Hapus notifikasi (admin)
+    public function destroy($id)
     {
+        $notifikasi = Notification::findOrFail($id);
         $notifikasi->delete();
+
         return redirect()->route('admin.notifikasi.index')->with('success', 'Notifikasi berhasil dihapus!');
+    }
+
+    // ✅ Hapus notifikasi (customer hanya bisa hapus miliknya sendiri)
+    public function customerDestroy(Notification $notifikasi)
+    {
+        if ($notifikasi->user_id !== Auth::id()) {
+            abort(403); // Tidak boleh hapus notifikasi milik orang lain
+        }
+
+        $notifikasi->delete();
+
+        return redirect()->back()->with('success', 'Notifikasi berhasil dihapus.');
     }
 }

@@ -24,7 +24,9 @@ class OrderController extends Controller
             return back()->with('error', 'Data customer tidak ditemukan.');
         }
 
-        $quantity = 1;
+        $quantity = session('checkout_qty', 1);
+        session()->forget('checkout_qty');
+
         $subtotal = $product->price * $quantity;
         $shipping = 15000;
         $service_fee = 5000;
@@ -53,53 +55,64 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'product_id' => 'required|exists:products,id',
-        'qty' => 'required|integer|min:1',
-        'price' => 'required|numeric',
-        'total' => 'required|numeric',
-        'payment_method' => 'required|string',
-        'shipping' => 'required|numeric',
-        'service_fee' => 'required|numeric',
-    ]);
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'qty' => 'required|integer|min:1',
+            'price' => 'required|numeric',
+            'total' => 'required|numeric',
+            'payment_method' => 'required|string',
+            'shipping' => 'required|numeric',
+            'service_fee' => 'required|numeric',
+        ]);
 
-    DB::beginTransaction();
+        DB::beginTransaction();
 
-    try {
-        $customer = Customer::where('user_id', Auth::id())->first();
-        if (!$customer) {
-            return back()->with('error', 'Data customer tidak ditemukan.');
+        try {
+            $customer = Customer::where('user_id', Auth::id())->first();
+            if (!$customer) {
+                return back()->with('error', 'Data customer tidak ditemukan.');
+            }
+
+            // Ambil data produk dari DB
+            $product = Product::findOrFail($request->product_id);
+
+            // Cek apakah stok mencukupi
+            if ($product->stock < $request->qty) {
+                return back()->with('error', 'Stok produk tidak cukup.');
+            }
+
+            // Buat transaksi
+            $transaction = Transaction::create([
+                'user_id' => Auth::id(),
+                'customer_id' => $customer->id,
+                'transaction_code' => 'TRX-' . now()->timestamp,
+                'date' => now()->toDateString(),
+                'total' => $request->total,
+                'payment_type' => $request->payment_method,
+                'status' => 'pending',
+            ]);
+
+            // Buat detail transaksi
+            DetailTransaction::create([
+                'transaction_id' => $transaction->id,
+                'product_id' => $request->product_id,
+                'qty' => $request->qty,
+                'sub_total' => $request->price * $request->qty,
+            ]);
+
+            // Kurangi stok produk
+            $product->stock -= $request->qty;
+            $product->save();
+
+            DB::commit();
+
+            return redirect()->route('transactions.index')->with('success', 'Pesanan berhasil dibuat!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal membuat pesanan: ' . $e->getMessage());
         }
-
-        $transaction = Transaction::create([
-            'user_id' => Auth::id(),
-            'customer_id' => $customer->id,
-            'transaction_code' => 'TRX-' . now()->timestamp,
-            'date' => now()->toDateString(),
-            'total' => $request->total,
-            'payment_type' => $request->payment_method,
-            'status' => 'pending',
-        ]);
-
-        DetailTransaction::create([
-            'transaction_id' => $transaction->id,
-            'product_id' => $request->product_id,
-            'qty' => $request->qty,
-            'sub_total' => $request->price * $request->qty,
-        ]);
-
-        DB::commit();
-
-        // ✅ Redirect ke struk-pesanan
-        return redirect()->route('transactions.index')->with('success', 'Pesanan berhasil dibuat!');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Gagal membuat pesanan: ' . $e->getMessage());
     }
-}
-
 
     public function struk()
     {
@@ -119,4 +132,17 @@ class OrderController extends Controller
 
         return view('pesanan_customer', compact('transaction'));
     }
+
+    public function setQuantity(Request $request, $id)
+{
+    $request->validate([
+        'quantity' => 'required|integer|min:1'
+    ]);
+
+    // Simpan quantity ke session
+    session(['checkout_qty' => $request->quantity]);
+
+    return response()->json(['status' => 'success']);
+}
+
 }

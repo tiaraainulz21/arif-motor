@@ -82,71 +82,90 @@
 
 {{-- Script JS --}}
 <script>
-    function changeQuantity(id, delta) {
-        const input = document.getElementById('quantity-' + id);
-        const hiddenInput = document.getElementById('quantity-hidden-' + id);
-        let qty = parseInt(input.value);
+    // Fungsi ubah kuantitas item
+    function changeQuantity(itemId, change) {
+        const qtyInput = document.getElementById(`quantity-${itemId}`);
+        const qtyHidden = document.getElementById(`quantity-hidden-${itemId}`);
+        const unitPrice = document.querySelector(`#quantity-${itemId}`).closest('tr').querySelector('.unit-price').dataset.price;
+        const itemTotal = document.getElementById(`item-total-${itemId}`);
 
-        if (qty + delta < 1) return;
+        let qty = parseInt(qtyInput.value);
+        qty = isNaN(qty) ? 0 : qty;
 
-        qty += delta;
-        input.value = qty;
-        hiddenInput.value = qty;
+        qty += change;
+        if (qty < 1) qty = 1; // Minimal kuantitas adalah 1
 
-        // Ambil harga satuan
-        const row = input.closest('tr');
-        const unitPrice = parseInt(row.querySelector('.unit-price').dataset.price);
+        // Update tampilan dan value
+        qtyInput.value = qty;
+        qtyHidden.value = qty;
 
-        // Hitung ulang total per item
-        const itemTotal = unitPrice * qty;
-        row.querySelector('.item-total').innerText = 'Rp.' + itemTotal.toLocaleString('id-ID');
+        // Hitung total harga item = harga satuan * qty
+        const totalHarga = qty * unitPrice;
+        itemTotal.innerText = 'Rp.' + Number(totalHarga).toLocaleString('id-ID');
 
-        // Hitung ulang total semua item
+        // Update total semua item yang dicentang
         updateTotalAll();
     }
 
+    // Fungsi update total semua produk yang dicentang
     function updateTotalAll() {
         let total = 0;
 
-        document.querySelectorAll('.item-total').forEach(item => {
-            const angka = item.innerText.replace(/[^\d]/g, '');
-            if (angka) {
-                total += parseInt(angka);
+        document.querySelectorAll('.item-checkbox').forEach(cb => {
+            if (cb.checked) {
+                const row = cb.closest('tr');
+                const qty = parseInt(row.querySelector('input[type="text"]').value) || 1;
+                const price = parseInt(row.querySelector('.unit-price').dataset.price) || 0;
+                total += qty * price;
             }
         });
 
         document.getElementById('total-all').innerText = 'Rp.' + total.toLocaleString('id-ID');
     }
 
+    // Checkbox "Pilih Semua"
     document.getElementById('checkAll')?.addEventListener('change', function () {
         document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = this.checked);
+        updateTotalAll();
     });
 
-    function removeItem(itemId, button) {
-        if (!confirm('Hapus produk ini dari keranjang?')) return;
+    // Event listener setiap checkbox item
+    document.querySelectorAll('.item-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateTotalAll);
+    });
 
-        fetch(`/cart/${itemId}/remove`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                const row = button.closest('tr');
-                row.remove();
-                updateTotalAll();
-            } else {
-                return response.json().then(data => {
-                    alert(data.message || 'Gagal menghapus item');
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menghapus item.');
-        });
-    }
+    // Jalankan saat pertama kali
+    updateTotalAll();
+
+    function removeItem(id, buttonElement) {
+    if (!confirm('Apakah kamu yakin ingin menghapus item ini?')) return;
+
+    fetch(`/cart/${id}/remove`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Gagal menghapus item');
+        return response.json();
+    })
+    .then(data => {
+        const row = buttonElement.closest('tr');
+        row.remove();
+        updateTotalAll();
+
+        const remainingRows = document.querySelectorAll('.item-checkbox');
+        if (remainingRows.length === 0) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        alert('Terjadi kesalahan saat menghapus item.');
+        console.error(error);
+    });
+}
+
 </script>
 @endsection

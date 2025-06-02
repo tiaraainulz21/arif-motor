@@ -40,6 +40,8 @@ Route::get('/pembayaran/{transaction}', [PaymentController::class, 'show'])->nam
 Route::get('/beranda', [ProductController::class, 'showAllForCustomer'])->name('beranda');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::post('/produk/{id}/set-quantity', [OrderController::class, 'setQuantity'])->name('produk.setQuantity');
+
 
 // RINGKASAN & ORDER STORE (Customer)
 Route::get('/produk/{id}/ringkasan', [OrderController::class, 'summary'])->name('order.summary');
@@ -79,6 +81,7 @@ Route::get('/transactions', [StrukPesananController::class, 'index'])->name('tra
 Route::get('/struk-pesanan/{id}', [StrukPesananController::class, 'show'])->name('transactions.detail');
 
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
+Route::delete('/notifikasi/{notifikasi}', [NotifikasiController::class, 'customerDestroy'])->name('notifikasi.customer.destroy');
 Route::get('/status', [StatusController::class, 'index'])->name('status');
 
 // Service Kendaraan
@@ -133,6 +136,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->grou
 
     // Pendapatan Admin
     Route::get('/pendapatan', [PendapatanController::class, 'index'])->name('admin.pendapatan.index');
+    Route::get('/pendapatan/pdf', [PendapatanController::class, 'exportPdf'])->name('pendapatan.pdf');
 
 
 });

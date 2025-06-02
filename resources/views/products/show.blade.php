@@ -41,7 +41,17 @@
                     function redirectToSummary() {
                         const quantity = document.getElementById('quantity').value;
                         const productId = "{{ $product['id'] }}";
-                        window.location.href = `/produk/${productId}/ringkasan?quantity=${quantity}`;
+                        fetch(`/produk/${productId}/set-quantity`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ quantity })
+                        })
+                        .then(() => {
+                            window.location.href = `/produk/${productId}/ringkasan`;
+                        });
                     }
 
                     function addToCart() {
@@ -52,6 +62,8 @@
                         // submit form
                         document.getElementById('add-to-cart-form').submit();
                     }
+
+                    
                 </script>
 
                 <div class="mt-3">

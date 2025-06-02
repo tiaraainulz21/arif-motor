@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Transaction;
 use Carbon\Carbon;
 
@@ -26,4 +27,17 @@ class PendapatanController extends Controller
 
         return view('admin.pendapatan.index', compact('labels', 'totals', 'totalPendapatan'));
     }
+
+    public function exportPdf()
+{
+    $pendapatan = Transaction::selectRaw('DATE(date) as tanggal, COUNT(*) as jumlah_produk, SUM(total) as total')
+        ->groupBy('tanggal')
+        ->orderBy('tanggal')
+        ->get();
+
+    $totalPendapatan = $pendapatan->sum('total');
+
+    return Pdf::loadView('admin.pendapatan.laporan_pdf', compact('pendapatan', 'totalPendapatan'))
+        ->download('laporan_pendapatan.pdf');
+}
 }

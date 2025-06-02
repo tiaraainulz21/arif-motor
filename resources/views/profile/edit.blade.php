@@ -18,12 +18,14 @@
                     <input type="text" class="form-control" name="phone" value="{{ $customer['phone'] }}">
 
                     <label class="fw-bold mt-2">Jenis Kelamin</label>
-                    <input type="text" class="form-control" name="gender" value="{{ $customer['gender'] }}">
+                    <select class="form-control" name="gender">
+                        <option value="Laki-laki" {{ $customer['gender'] == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="Perempuan" {{ $customer['gender'] == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
 
                     <button type="submit" class="btn btn-success mt-3 w-100">Simpan</button>
                 </form>
             </div>
         </div>
     </div>
-
-@endsection()
+@endsection

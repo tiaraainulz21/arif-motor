@@ -10,17 +10,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
-        .fixed-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1000px;
-            max-width: 100%;
+        body {
+            padding-top: 100px;
+            padding-bottom: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
 <!-- 🔹 HEADER -->
 <header class="bg-success text-white fixed-top shadow-sm">
@@ -33,11 +42,11 @@
     </div>
 </header>
 
-<!-- 🔹 CARD DI TENGAH -->
-<div class="fixed-center">
-    <div class="card p-4 shadow">
+<!-- 🔹 KONTEN UTAMA -->
+<main class="content-container">
+    <div class="card p-4 shadow mb-4">
 
-        <!-- 🔙 TOMBOL DAN JUDUL -->
+        <!-- 🔙 TOMBOL & JUDUL -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
@@ -45,10 +54,10 @@
             <h2 class="text-success m-0 text-center">
                 <i class="fa-solid fa-tools"></i> Kelola Status Service
             </h2>
-            <div style="width: 150px;"></div> <!-- Spacer supaya judul tetap center -->
+            <div style="width: 150px;"></div> <!-- Spacer -->
         </div>
 
-        <!-- 🔍 SEARCH BAR -->
+        <!-- 🔍 SEARCH -->
         <div class="d-flex justify-content-end mb-3">
             <form action="{{ route('admin.service_status.index') }}" method="GET" class="d-flex">
                 <input type="text" name="search" class="form-control form-control-sm me-2"
@@ -64,7 +73,7 @@
             </form>
         </div>
 
-        <!-- ALERT -->
+        <!-- ✅ ALERT -->
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -74,52 +83,54 @@
         <!-- 📋 TABEL -->
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
-                <thead class="table-success">
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Pelanggan</th>
-                        <th>Jenis Service</th>
-                        <th>Resume</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
+                <thead class="table-success sticky-header">
+                <tr>
+                    <th>No</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Jenis Service</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @forelse ($services as $index => $service)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $service->name }}</td>
-                            <td>{{ $service->type }}</td>
-                            <td>
-                                <a href="{{ route('service.resume', $service->id) }}" class="btn btn-sm text-white" style="background-color: rgb(0, 0, 0);">
-                                    <u>Lihat Resume</u>
-                                </a>
-                            </td>
-                            <td>
-                                @if ($service->status === 'Selesai')
-                                    <span class="badge bg-success">Selesai</span>
-                                @elseif ($service->status === 'Diproses')
-                                    <span class="badge bg-warning text-dark">Diproses</span>
-                                @else
-                                    <span class="badge bg-secondary">Menunggu</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.service_status.edit', $service->id) }}" class="btn btn-sm btn-primary">
-                                    <i class="fa-solid fa-pen-to-square"></i> Ubah Status
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-muted">Tidak ada data service.</td>
-                        </tr>
-                    @endforelse
+                @forelse ($services as $index => $service)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $service->name }}</td>
+                        <td>{{ $service->type }}</td>
+                        <td>
+                            <a href="{{ route('service.resume', $service->id) }}" class="btn btn-sm text-white"
+                               style="background-color: rgb(0, 0, 0);">
+                                <u>Lihat Resume</u>
+                            </a>
+                        </td>
+                        <td>
+                            @if ($service->status === 'Selesai')
+                                <span class="badge bg-success">Selesai</span>
+                            @elseif ($service->status === 'Diproses')
+                                <span class="badge bg-warning text-dark">Diproses</span>
+                            @else
+                                <span class="badge bg-secondary">Menunggu</span>
+                            @endif
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.service_status.edit', $service->id) }}"
+                               class="btn btn-sm btn-primary">
+                                <i class="fa-solid fa-pen-to-square"></i> Ubah Status
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-muted">Tidak ada data service.</td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>
     </div>
-</div>
+</main>
 
 <!-- 🔻 FOOTER -->
 <footer class="bg-success text-white text-center py-3 fixed-bottom">
