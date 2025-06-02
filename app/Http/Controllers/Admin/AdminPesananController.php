@@ -8,19 +8,21 @@ use App\Models\Transaction;
 
 class AdminPesananController extends Controller
 {
-    public function index()
-    {
-        $transactions = Transaction::with('user', 'customer', 'details.product')
-            ->orderBy('created_at', 'desc')
-            ->get();
+    // 🛠️ PERBAIKAN
+        public function index()
+            {
+                $transactions = Transaction::with('user', 'customer', 'details.product') // ❌ Hapus 'shippingAddress'
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
-        return view('admin.pesanan.index', compact('transactions'));
-    }
+                return view('admin.pesanan.index', compact('transactions'));
+            }
+
 
     public function update(Request $request, $id)
 {
     $validated = $request->validate([
-        'status' => 'required|string|in:Diterima,Diproses,Dikemas',
+        'status' => 'required|string|in:Diproses,Dikemas,Diterima',
     ]);
 
     Transaction::where('id', $id)->update([

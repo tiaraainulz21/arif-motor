@@ -4,7 +4,6 @@
 <style>
     .container {
         width: 90%;
-        
     }
 
     .item-card {
@@ -26,11 +25,15 @@
         font-size: 14px;
     }
 
-    .status-dikirim {
-        background-color: orange;
+    .status-diproses {
+        background-color: green;
     }
 
-    .status-selesai {
+    .status-dikemas {
+        background-color: green;
+    }
+
+    .status-diterima {
         background-color: green;
     }
 
@@ -53,10 +56,18 @@
 
 <div class="container">
     @forelse ($transactions as $transaction)
+        @php
+            $statusClass = match($transaction->status) {
+                'Diproses' => 'status-diproses',
+                'Dikemas' => 'status-dikemas',
+                'Diterima' => 'status-diterima',
+                default => 'bg-secondary'
+            };
+        @endphp
         <div class="item-card" onclick="window.location.href='{{ route('transactions.detail', $transaction->id) }}'">
             <div class="item-info">
                 <h5>{{ $transaction->transaction_code }}</h5>
-                <span class="status-badge {{ $transaction->status == 'Dikirim' ? 'status-dikirim' : 'status-selesai' }}">
+                <span class="status-badge {{ $statusClass }}">
                     {{ $transaction->status }}
                 </span>
             </div>

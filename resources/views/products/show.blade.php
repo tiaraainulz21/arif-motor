@@ -25,46 +25,49 @@
                 </div>
 
                 <script>
-                    function increaseQuantity() {
-                        let input = document.getElementById('quantity');
-                        input.value = parseInt(input.value) + 1;
-                    }
+    // ambil stok produk dari blade
+    const maxStock = {{ $product['stock'] }};
 
-                    function decreaseQuantity() {
-                        let input = document.getElementById('quantity');
-                        let value = parseInt(input.value);
-                        if (value > 1) {
-                            input.value = value - 1;
-                        }
-                    }
+    function increaseQuantity() {
+        let input = document.getElementById('quantity');
+        let currentValue = parseInt(input.value);
+        if (currentValue < maxStock) {
+            input.value = currentValue + 1;
+        }
+    }
 
-                    function redirectToSummary() {
-                        const quantity = document.getElementById('quantity').value;
-                        const productId = "{{ $product['id'] }}";
-                        fetch(`/produk/${productId}/set-quantity`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ quantity })
-                        })
-                        .then(() => {
-                            window.location.href = `/produk/${productId}/ringkasan`;
-                        });
-                    }
+    function decreaseQuantity() {
+        let input = document.getElementById('quantity');
+        let value = parseInt(input.value);
+        if (value > 1) {
+            input.value = value - 1;
+        }
+    }
 
-                    function addToCart() {
-                        // ambil qty
-                        const qty = document.getElementById('quantity').value;
-                        // isi input qty form tersembunyi
-                        document.getElementById('hidden-qty').value = qty;
-                        // submit form
-                        document.getElementById('add-to-cart-form').submit();
-                    }
+    // fungsi redirectToSummary dan addToCart tetap sama
+    function redirectToSummary() {
+        const quantity = document.getElementById('quantity').value;
+        const productId = "{{ $product['id'] }}";
+        fetch(`/produk/${productId}/set-quantity`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ quantity })
+        })
+        .then(() => {
+            window.location.href = `/produk/${productId}/ringkasan`;
+        });
+    }
 
-                    
-                </script>
+    function addToCart() {
+        const qty = document.getElementById('quantity').value;
+        document.getElementById('hidden-qty').value = qty;
+        document.getElementById('add-to-cart-form').submit();
+    }
+</script>
+
 
                 <div class="mt-3">
                     <button class="btn btn-success" onclick="addToCart()">
