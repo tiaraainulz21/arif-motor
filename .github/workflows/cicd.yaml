@@ -69,7 +69,7 @@ jobs:
           php artisan config:cache
 
       - name: Run database migrations and seed
-        run: php artisan migrate:fresh --seed
+        run: php artisan migrate:fresh
 
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
