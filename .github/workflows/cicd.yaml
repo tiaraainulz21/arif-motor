@@ -20,65 +20,69 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd "mysqladmin ping -p$$MYSQL_ROOT_PASSWORD"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        extensions: mbstring, ctype, fileinfo, openssl, PDO, tokenizer, xml, mysql, pdo_mysql
-        coverage: none
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, ctype, fileinfo, openssl, PDO, tokenizer, xml, mysql, pdo_mysql
+          coverage: none
 
-    - name: Install dependencies
-      run: |
-        composer install --prefer-dist --no-interaction --no-progress
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
 
-    - name: Configure MySQL
-      run: |
-        cp .env.example .env
-        sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=mysql/' .env
-        sed -i 's/DB_HOST=127.0.0.1/DB_HOST=127.0.0.1/' .env
-        sed -i 's/DB_PORT=3306/DB_PORT=3306/' .env
-        sed -i 's/DB_DATABASE=tiara/DB_DATABASE=laracicd/' .env
-        sed -i 's/DB_USERNAME=root/DB_USERNAME=polindra/' .env
-        sed -i 's/DB_PASSWORD=/DB_PASSWORD=polindra/' .env
+      - name: Configure .env for MySQL
+        run: |
+          cp .env.example .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+          sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env
+          sed -i 's/DB_PORT=.*/DB_PORT=3306/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=laracicd/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=polindra/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=polindra/' .env
 
-    - name: Generate app key
-      run: php artisan key:generate
+      - name: Generate app key
+        run: php artisan key:generate
 
-    - name: Wait for MySQL to be ready
-      run: |
-        for i in {1..5}; do
-          if mysqladmin ping -h 127.0.0.1 -u polindra -p polindra --silent; then
-            echo "MySQL is ready!"
-            break
-          fi
-          echo "Waiting for MySQL... Attempt $i/10"
-          sleep 3
-        done
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..10}; do
+            if mysqladmin ping -h 127.0.0.1 -u polindra -ppolindra --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... Attempt $i/10"
+            sleep 3
+          done
 
-    - name: Run database migrations and seed
-      run: php artisan migrate:fresh
+      - name: Clear and cache config
+        run: |
+          php artisan config:clear
+          php artisan config:cache
 
-    - name: Upload artifact for deployment
-      uses: actions/upload-artifact@v4
-      with:
-        name: laravel-d4rpl2b-kelompok-6
-        path: |
-          .
-          !.github/
-          !.git/
-          !node_modules/
-          !vendor/
-          !storage/debugbar/
-        retention-days: 1
+      - name: Run database migrations and seed
+        run: php artisan migrate:fresh --seed
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: laravel-d4rpl2b-kelompok-6
+          path: |
+            ./
+            !.github/
+            !.git/
+            !node_modules/
+            !storage/debugbar/
+            !vendor/
+          retention-days: 1
 
   deploy:
     needs: build-test
@@ -86,55 +90,55 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: laravel-d4rpl2b-kelompok-6
-        path: ./deploy
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: laravel-d4rpl2b-kelompok-6
+          path: ./deploy
 
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
-        port: 22
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          port: 22
 
-    - name: Deploy to server via SCP/SSH
-      run: |
-        # Buat direktori sementara di server
-        ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ~/laravel-temp-deploy"
+      - name: Deploy to server via SCP/SSH
+        env:
+          DEPLOY_USER: ${{ secrets.SSH_USER }}
+          DEPLOY_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          echo "📁 Membuat direktori sementara di server"
+          ssh -o StrictHostKeyChecking=no -p 22 $DEPLOY_USER@$DEPLOY_HOST "mkdir -p ~/laravel-temp-deploy"
 
-        # Upload files ke server
-        scp -o StrictHostKeyChecking=no -P 22 -r ./deploy/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel-temp-deploy/
+          echo "📤 Upload file ke server"
+          scp -o StrictHostKeyChecking=no -P 22 -r ./deploy/* $DEPLOY_USER@$DEPLOY_HOST:~/laravel-temp-deploy/
 
-        # Jalankan deployment script di server
-        ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-          cd ~/laravel-temp-deploy
+          echo "🚀 Eksekusi deployment di server"
+          ssh -o StrictHostKeyChecking=no -p 22 $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+            cd ~/laravel-temp-deploy
 
-          # Backup existing deployment (optional)
-          # tar -czf /backup/laravel-backup-$(date +"%Y%m%d%H%M%S").tar.gz /var/www/laravel-d4rpl2b-kelompok-6
+            echo "📦 Menyalin file ke direktori produksi"
+            sudo rsync -avz --delete \
+              --exclude='.env' \
+              --exclude='storage' \
+              --exclude='.git' \
+              --exclude='.github' \
+              ./ /var/www/laravel-d4rpl2b-kelompok-6/
 
-          # Copy files to production directory
-          sudo rsync -avz --delete \
-            --exclude='.env' \
-            --exclude='storage' \
-            --exclude='.git' \
-            --exclude='.github' \
-            ~/laravel-temp-deploy/ /var/www/laravel-d4rpl2b-kelompok-6/
+            echo "🔐 Set permission"
+            sudo chown -R www-data:www-data /var/www/laravel-d4rpl2b-kelompok-6
+            sudo chmod -R 755 /var/www/laravel-d4rpl2b-kelompok-6/storage
+            sudo chmod -R 755 /var/www/laravel-d4rpl2b-kelompok-6/bootstrap/cache
 
-          # Set permissions
-          sudo chown -R www-data:www-data /var/www/laravel-d4rpl2b-kelompok-6
-          sudo chmod -R 755 /var/www/laravel-d4rpl2b-kelompok-6/storage
-          sudo chmod -R 755 /var/www/laravel-d4rpl2b-kelompok-6/bootstrap/cache
+            echo "🛠 Jalankan Laravel command"
+            cd /var/www/laravel-d4rpl2b-kelompok-6
+            sudo -u www-data composer install --no-dev --optimize-autoloader
+            sudo -u www-data php artisan config:cache
+            sudo -u www-data php artisan route:cache
+            sudo -u www-data php artisan view:cache
+            sudo -u www-data php artisan migrate --force
 
-          # Run deployment commands
-          cd /var/www/laravel-d4rpl2b-kelompok-6
-          sudo -u www-data composer install --optimize-autoloader --no-dev
-          sudo -u www-data php artisan config:cache
-          sudo -u www-data php artisan route:cache
-          sudo -u www-data php artisan view:cache
-          sudo -u www-data php artisan migrate --force
-
-          # Cleanup
-          rm -rf ~/laravel-temp-deploy
-        EOF
+            echo "🧹 Cleanup"
+            rm -rf ~/laravel-temp-deploy
+          EOF
